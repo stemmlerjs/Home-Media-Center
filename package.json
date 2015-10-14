@@ -1,0 +1,13 @@
+{
+  "name": "home-media-center",
+  "version": "0.0.0",
+  "description": "Home media center",
+  "main": "server.js",
+  "author": "Khalil Stemmler",
+  "private": true,
+  "license": "BSD",
+  "dependencies": {
+    "express": "3.4.8",
+    "socket.io": "^1.3.7"
+  }
+}

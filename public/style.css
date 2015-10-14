@@ -1,0 +1,103 @@
+/* ==== Google font ==== */
+@import url('http://fonts.googleapis.com/css?family=Lato:400,300,700,900');
+
+#titlething{
+    font-family: 'Lato';
+    font-weight: bold;
+    border-color:white;
+    border-style: solid;
+    padding-top:4px;
+    padding-left:4px;
+    padding-bottom:4px;
+    padding-right:4px;
+    width:170px;
+}
+
+#bodyBackground{
+    /*Gradient*/
+    background: -webkit-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%); /* Chrome 10+, Saf5.1+ */
+    background:    -moz-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%); /* FF3.6+ */
+    background:     -ms-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%); /* IE10 */
+    background:      -o-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%); /* Opera 11.10+ */
+    background:         linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%); /* W3C */    
+}
+
+#bodyContent{
+    padding-top:90px;
+    padding-left:40px;
+    padding-right:40px;
+}
+
+#carcinogenTitleDiv{
+    float:left;
+}
+
+#icons{
+    color:white;
+    font-size:20px
+}
+
+#searchbutton{
+    background-color:#252321;
+    border-style:none;
+    
+}
+
+.drop-shadow {
+    background: #9479fa;
+}
+
+.drop-shadow.top {
+    box-shadow: 0 -4px 2px -2px rgba(0,0,0,0.4)
+}
+
+.drop-shadow.right {
+    box-shadow: 4px 0 2px -2px rgba(0,0,0,0.4)
+}
+
+.drop-shadow.bottom {
+    box-shadow: 0 4px 2px -2px rgba(0,0,0,0.4)
+}
+
+.drop-shadow.left {
+    box-shadow: -4px 0 2px -2px rgba(0,0,0,0.4)
+}
+
+#menuItems{
+   color:#1884BA;
+}
+
+.nowPlayingContainer{
+    background-color:black;
+}
+
+#top, #bottom, #left, #right {
+	background: #a5ebff;
+	position: fixed;
+	}
+	#left, #right {
+		top: 0; bottom: 0;
+		width: 15px;
+		}
+		#left { left: 0; }
+		#right { right: 0; }
+		
+	#top, #bottom {
+		left: 0; right: 0;
+		height: 15px;
+		}
+		#top { top: 0; }
+		#bottom { bottom: 0; }
+
+@media 
+
+/* Fairly small screens including iphones */
+only screen and (max-width: 500px),
+
+/* iPads */
+only screen and (min-device-width: 768px) and (max-device-width: 1024px) 
+
+{
+	#top, #bottom, #left, #right { display: none; }
+}
+
