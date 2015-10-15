@@ -4,6 +4,10 @@
 $(function() {
     //Start a socket (connect)
     var socket = io('http://localhost:3000');
-    alert("socket started");
+
+
+    socket.on('message', function(inMessage){
+       alert(inMessage.user + " send a message saying " + inMessage.text);
+    });
 
 });
