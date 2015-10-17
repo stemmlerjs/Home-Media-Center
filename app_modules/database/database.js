@@ -6,6 +6,7 @@
 var sqlite3 = require('sqlite3').verbose();
 var fs = require('fs');
 var file = './app_modules/database/mydb.db';
+var flow = require('nimble');
 
 //Initialize Database
 setupLibrary();
@@ -30,24 +31,28 @@ function setupLibrary(){
         console.log("Database initialized");
     });
     db.close();
-}
+};
 
 function getLibrary(){
     var db = new sqlite3.Database(file);
     var allRows = [];
-    db.serialize(function () {
-
         //Return every row
-        db.each("SELECT * FROM MYLIBRARY ORDER BY ALBUM, ALBUM_TRACK_NO ", function(err, row) {
-            allRows.push(row);
-            console.log("Array length: " + allRows.length);
-            console.log(row);
-        });
-        console.log(allRows.length);
-    });
-    db.close();
+        flow.series([
+            function (callback) {
+                    setTimeout(function (){
+                    db.each("SELECT * FROM MYLIBRARY ORDER BY ALBUM, ALBUM_TRACK_NO ", function(err, row) {
+                        if(err) console.log("There was an error");
+                         else allRows.push(row);
+                    });
+                    callback();
+                    },100);
+            }
+        ]);
+    //In JS, only Objects (this includes arrays) are pass by reference
     return allRows;
 }
+
+
 
 //Temporary Insert, demonstrate how to perform inserts
 function tempInsert(){
@@ -74,3 +79,4 @@ function tempInsert(){
 exports.getLibrary = function() {
     return getLibrary();
 };
+
