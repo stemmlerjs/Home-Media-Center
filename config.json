@@ -1,0 +1,12 @@
+{
+  "network": {
+    "port": "3000"
+  },
+  "database": {
+    "initialized": true,
+    "id_increment_count": 1
+  },
+  "filesystem": {
+    "local_music_library": ""
+  }
+}

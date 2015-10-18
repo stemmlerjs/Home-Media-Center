@@ -18,6 +18,7 @@ $(document).ready(function () {
         $('#myModalLabel').text("Search Album");
         searchType = "albumsearch";
     });
+
 });
 
 //AJAX PAGE LOADING

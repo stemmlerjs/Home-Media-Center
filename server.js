@@ -8,14 +8,16 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var flow = require('nimble');
-var fs = require('fs');
+var filesystem = require('fs');
+var id3 = require('id3js');
+var config = require('./config.js');
 
 //Initialize database
 var database = require('./app_modules/database/database.js');
 
 //Start server
-server.listen(3000, function () {
-    console.log('Server listening at port ', 3000);
+server.listen(config.configReader.network.port, function () {
+    console.log('Server listening at port ', config.configReader.network.port);
 });
 
 //Make public directory routable
@@ -46,7 +48,7 @@ app.get('/library', function(req, res){
 
 //BUILD MAIN PAGE
 app.get('/index', function(req, res){
-    fs.createReadStream('./public/index.txt').pipe(res);
+    fs.createReadStream('./public/src/index.txt').pipe(res);
 });
 
 io.on('connection', function (socket) {
@@ -78,3 +80,134 @@ app.get('/songsTotal', function(req, res){
         }
     ]);
 });
+
+function addMultipleSongs(dirOfSongs){
+    var absFiles = [];
+    var insertCommand = "INSERT INTO MYLIBRARY (TRACKID,SONG,ALBUM,ARTIST,YEAR,DATE_IMPORTED,TRACK_LENGTH,ALBUM_TRACK_NO,FILE_LOCATION) VALUES ";
+    flow.series([
+        function(callback) {
+            setTimeout(function() {
+                absFiles = _getAllFilesFromFolder(dirOfSongs);
+            },500);
+            callback();
+        },
+        function(callback) {
+            setTimeout(function() {
+                absFiles.forEach(function(inputAudioFileLocation){
+                    //Get ID3TAGS
+                    id3({ file: inputAudioFileLocation, type: id3.OPEN_LOCAL }, function(err, tags) {
+                        if(err){
+                            console.log("Could not get id3 tags for: " + inputAudioFileLocation);
+                            return null;
+                        } else {
+                            //Tags are passed as an object in the following format
+                            /*
+                             {
+                             "artist": "Song artist",
+                             "title": "Song name",
+                             "album": "Song album",
+                             "year": "2013",
+                             "v1": {
+                             "title": "ID3v1 title",
+                             "artist": "ID3v1 artist",
+                             "album": "ID3v1 album",
+                             "year": "ID3v1 year",
+                             "comment": "ID3v1 comment",
+                             "track": "ID3v1 track (e.g. 02)",
+                             "version": 1.0
+                             },
+                             "v2": {
+                             "artist": "ID3v2 artist",
+                             "album": "ID3v2 album",
+                             "version": [4, 0]
+                             }
+                             }
+                             See documentation at: https://www.npmjs.com/package/id3js
+                             */
+                            //We want to create a database INSERT
+                            console.log(tags);
+                            console.log(tags.title);
+                            console.log(tags.artist);
+                            console.log(tags.album);
+                            console.log(tags.year);
+                            console.log(tags.v1.track);
+                        }
+                    });
+                });
+            }, 500);
+            callback();
+        }
+    ])
+}
+
+//TEST
+addMultipleSongs("C:/Users/Khalil/Desktop/trolling/Metal Box");
+
+
+/* Return the ID3 tag for an mp3 at an absolute file location
+ * @return: ID3 tag
+ */
+
+function getID3tag(inputAudioFileLocation){
+    var returnTag;
+    id3({ file: inputAudioFileLocation, type: id3.OPEN_LOCAL }, function(err, tags) {
+        if(err){
+            console.log("Could not get id3 tags for: " + inputAudioFileLocation);
+            return null;
+        } else {
+            //Tags are passed as an object in the following format
+            /*
+            {
+                "artist": "Song artist",
+                "title": "Song name",
+                "album": "Song album",
+                "year": "2013",
+                "v1": {
+                "title": "ID3v1 title",
+                    "artist": "ID3v1 artist",
+                    "album": "ID3v1 album",
+                    "year": "ID3v1 year",
+                    "comment": "ID3v1 comment",
+                    "track": "ID3v1 track (e.g. 02)",
+                    "version": 1.0
+            },
+                "v2": {
+                "artist": "ID3v2 artist",
+                    "album": "ID3v2 album",
+                    "version": [4, 0]
+            }
+            }
+            See documentation at: https://www.npmjs.com/package/id3js
+            */
+            returnTag = tags;
+        }
+    });
+    return returnTag;
+};
+
+/* Recursively finds all of the files from a directory
+ * @return: Array of absolute file paths.
+ */
+
+function _getAllFilesFromFolder(dir) {
+    var results = [];
+
+    //Read each file in the current directory
+    filesystem.readdirSync(dir).forEach(function(file) {
+
+        file = dir+'/'+file;
+        var stat = filesystem.statSync(file);
+
+        if (stat && stat.isDirectory()) {
+            results = results.concat(_getAllFilesFromFolder(file));
+        } else{
+            results.push(file);
+        }
+
+    });
+    return results;
+}
+
+function asyncPrint(obj){
+    console.log(obj);
+}
