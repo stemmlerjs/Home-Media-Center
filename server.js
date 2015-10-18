@@ -46,17 +46,35 @@ app.get('/library', function(req, res){
 
 //BUILD MAIN PAGE
 app.get('/index', function(req, res){
-    res.write('./public/index.txt');
-
+    fs.createReadStream('./public/index.txt').pipe(res);
 });
 
 io.on('connection', function (socket) {
     var address = socket.handshake.address;
-    console.log('New connection from ');
+    console.log('New connection from ' + address);
 
     //Do something when the client connects
     socket.on('disconnect', function () {
         console.log("socket disconnected");
         socket.disconnect();
     });
+});
+
+//BUILD MAIN PAGE
+app.get('/songsTotal', function(req, res){
+    var numberOfSongsJSONArr;
+    flow.series([
+        function(callback){
+            setTimeout(function(){
+                numberOfSongsJSONArr = database.getSongsTotal();
+                callback();
+            },30);
+        },
+        function(callback){
+            setTimeout(function(){
+                res.json(JSON.stringify(numberOfSongsJSONArr));
+                callback();
+            },40);
+        }
+    ]);
 });

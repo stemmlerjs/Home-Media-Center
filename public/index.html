@@ -63,7 +63,7 @@
                     </li>
 
                     <li role="presentation" class="active" style="padding-bottom:3px;">
-                        <a style="color:#1884BA" id="library" onClick="loadPage('library')" href="javascript:void(0);">Library <span class="badge">6395</span></a></li>
+                        <a style="color:#1884BA" id="library" onClick="loadPage('library')" href="javascript:void(0);">Library <span id="librarySongCount" class="badge">6395</span></a></li>
                     <li role="presentation"><a style="color:#1884BA" id="home-stations" onClick="loadPage('homestations')" href="javascript:void(0);">Home Stations <span class="badge">3</span></a></li>
                     <li role="presentation"><a style="color:#1884BA" id="messages" onClick="loadPage('settings')" href="javascript:void(0);">Settings</a></li>
 
@@ -200,7 +200,25 @@
         </div>
     </div>
 
+    <!-- HIDDEN ADD MUSIC FORM (Displayed when asked for make a search by song, artist, album)   -->
+    <div id="addMusicForm" class="container-fluid modal fade">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;                            </span></button>
+                    <h4 class="modal-title">Add Music</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
 
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="spinner" class="spinner" style="visibility: hidden;"></div>
 
 
 

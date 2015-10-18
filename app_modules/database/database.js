@@ -75,8 +75,25 @@ function tempInsert(){
     db.close();
 }
 
+function getSongsTotal(){
+    var db = new sqlite3.Database(file);
+    var arr = [];
+    db.serialize(function () {
+        db.each("SELECT COUNT(*) FROM MYLIBRARY ", function(err, row) {
+            if(err) console.log("There was an error");
+            else arr.push(row);
+        });
+    });
+    db.close();
+    return arr;
+}
+
 //*********EXPORTS*************
 exports.getLibrary = function() {
     return getLibrary();
+};
+
+exports.getSongsTotal = function(){
+    return getSongsTotal();
 };
 
