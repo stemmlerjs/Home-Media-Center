@@ -83,16 +83,16 @@ app.get('/songsTotal', function(req, res){
 
 function addMultipleSongs(dirOfSongs){
     var absFiles = [];
-    var insertCommand = "INSERT INTO MYLIBRARY (TRACKID,SONG,ALBUM,ARTIST,YEAR,DATE_IMPORTED,TRACK_LENGTH,ALBUM_TRACK_NO,FILE_LOCATION) VALUES ";
+    var insertCommand = "INSERT INTO MYLIBRARY (TRACKID,SONG,ALBUM,ARTIST,YEAR,DATE_IMPORTED,ALBUM_TRACK_NO,FILE_LOCATION) VALUES ";
     flow.series([
         function(callback) {
-            setTimeout(function() {
-                absFiles = _getAllFilesFromFolder(dirOfSongs);
-            },500);
-            callback();
+            absFiles = _getAllFilesFromFolder(dirOfSongs);
+            callback(null, "here");
         },
         function(callback) {
             setTimeout(function() {
+                var TRACK_ID = config.configReader.database.id_increment_count;
+                var absCount = 1;
                 absFiles.forEach(function(inputAudioFileLocation){
                     //Get ID3TAGS
                     id3({ file: inputAudioFileLocation, type: id3.OPEN_LOCAL }, function(err, tags) {
@@ -125,19 +125,35 @@ function addMultipleSongs(dirOfSongs){
                              See documentation at: https://www.npmjs.com/package/id3js
                              */
                             //We want to create a database INSERT
-                            console.log(tags);
-                            console.log(tags.title);
-                            console.log(tags.artist);
-                            console.log(tags.album);
-                            console.log(tags.year);
-                            console.log(tags.v1.track);
+                            var title = tags.title;
+                            var artist = tags.artist;
+                            var album = tags.album;
+                            var year = tags.year;
+                            var trackNo = tags.v1.track;
+
+                            if(typeof title === undefined) title = "";
+                            if(typeof artist === undefined) artist = "";
+                            if(typeof album === undefined) album = "";
+                            if(typeof year === undefined) year = "";
+                            if(typeof trackNo === undefined) trackNo = "";
+
+                            var date = new Date().toString();
+                            var inputDate = date.substring(0, date.lastIndexOf(":") + 3);
+                            var value = "(" + TRACK_ID + ", '" + title + "', '" + album + "', '" + artist + "', " + year + ", '" + inputDate + "', " + trackNo + ", '" + inputAudioFileLocation + "')";
+
+                            console.log("total length: " + absFiles.length + " - " + absCount);
+                            absCount++;
+                            insertCommand += value;
+                            TRACK_ID++;
                         }
                     });
                 });
             }, 500);
-            callback();
+            callback(null, insertCommand);
         }
-    ])
+    ], function(err, results) {
+        console.log(results)
+    });
 }
 
 //TEST
@@ -183,7 +199,7 @@ function getID3tag(inputAudioFileLocation){
         }
     });
     return returnTag;
-};
+}
 
 /* Recursively finds all of the files from a directory
  * @return: Array of absolute file paths.

@@ -12,6 +12,7 @@ var config = require(__dirname + '../../../config.js');
 //Initialize Database
 setupLibrary();
 
+
 //Setup the library
 function setupLibrary(){
     //If the database has not yet been initialized, set it up
@@ -25,7 +26,6 @@ function setupLibrary(){
         command += "ARTIST  TEXT            NOT NULL, ";
         command += "YEAR    INT, ";
         command += "DATE_IMPORTED TEXT, ";
-        command += "TRACK_LENGTH TEXT, ";
         command += "TRACK_NO INT, ";
         command += "FILE_LOCATION TEXT      NOT NULL) ";
         db.run(command);
