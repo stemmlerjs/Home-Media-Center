@@ -11,6 +11,7 @@ var flow = require('nimble');
 var filesystem = require('fs');
 var id3 = require('id3js');
 var config = require('./config.js');
+var async = require('async');
 
 //Initialize database
 var database = require('./app_modules/database/database.js');
@@ -81,78 +82,56 @@ app.get('/songsTotal', function(req, res){
     ]);
 });
 
-function addMultipleSongs(dirOfSongs){
-    var absFiles = [];
+/* addMultipleSongs - This function takes a directory of songs as a parameter, then gets information
+ *      about each song before throwing it into an insert statement and running it against the database.
+ *
+ * IMPORTANT: This function implements the async method: eachSeries which does not run the single iterations in parallel, but in serial.
+ * async.eachSeries(array of items to iterate over, iterator function to perform on each item, an optional callback that is performed
+ * when all items have been iterated over OR when the callback() throws an error like callback(new Error()).
+ */
+
+function addMultipleSongs(dirOfSongs) {
     var insertCommand = "INSERT INTO MYLIBRARY (TRACKID,SONG,ALBUM,ARTIST,YEAR,DATE_IMPORTED,ALBUM_TRACK_NO,FILE_LOCATION) VALUES ";
-    flow.series([
-        function(callback) {
-            absFiles = _getAllFilesFromFolder(dirOfSongs);
-            callback(null, "here");
-        },
-        function(callback) {
-            setTimeout(function() {
-                var TRACK_ID = config.configReader.database.id_increment_count;
-                var absCount = 1;
-                absFiles.forEach(function(inputAudioFileLocation){
-                    //Get ID3TAGS
-                    id3({ file: inputAudioFileLocation, type: id3.OPEN_LOCAL }, function(err, tags) {
-                        if(err){
-                            console.log("Could not get id3 tags for: " + inputAudioFileLocation);
-                            return null;
-                        } else {
-                            //Tags are passed as an object in the following format
-                            /*
-                             {
-                             "artist": "Song artist",
-                             "title": "Song name",
-                             "album": "Song album",
-                             "year": "2013",
-                             "v1": {
-                             "title": "ID3v1 title",
-                             "artist": "ID3v1 artist",
-                             "album": "ID3v1 album",
-                             "year": "ID3v1 year",
-                             "comment": "ID3v1 comment",
-                             "track": "ID3v1 track (e.g. 02)",
-                             "version": 1.0
-                             },
-                             "v2": {
-                             "artist": "ID3v2 artist",
-                             "album": "ID3v2 album",
-                             "version": [4, 0]
-                             }
-                             }
-                             See documentation at: https://www.npmjs.com/package/id3js
-                             */
-                            //We want to create a database INSERT
-                            var title = tags.title;
-                            var artist = tags.artist;
-                            var album = tags.album;
-                            var year = tags.year;
-                            var trackNo = tags.v1.track;
+    var TRACK_ID = config.configReader.database.id_increment_count;
+    var absCount = 1;
 
-                            if(typeof title === undefined) title = "";
-                            if(typeof artist === undefined) artist = "";
-                            if(typeof album === undefined) album = "";
-                            if(typeof year === undefined) year = "";
-                            if(typeof trackNo === undefined) trackNo = "";
+    _getAllFilesFromFolder(dirOfSongs, function parseArray(absFilesArray) {
+        async.eachSeries(absFilesArray, function getID3ForEach(inputAudioFileLocation, callback) {
+            id3({file: inputAudioFileLocation, type: id3.OPEN_LOCAL}, function (err, tags) {
+                if (err) {
+                    console.log("Could not get id3 tags for: " + inputAudioFileLocation);
+                } else {
+                    //We want to create a database INSERT
+                    var title = tags.title;
+                    var artist = tags.artist;
+                    var album = tags.album;
+                    var year = tags.year;
+                    var trackNo = tags.v1.track;
 
-                            var date = new Date().toString();
-                            var inputDate = date.substring(0, date.lastIndexOf(":") + 3);
-                            var value = "(" + TRACK_ID + ", '" + title + "', '" + album + "', '" + artist + "', " + year + ", '" + inputDate + "', " + trackNo + ", '" + inputAudioFileLocation + "')";
+                    if(typeof title === undefined) title = "";
+                    if(typeof artist === undefined) artist = "";
+                    if(typeof album === undefined) album = "";
+                    if(typeof year === undefined) year = "";
+                    if(typeof trackNo === undefined) trackNo = "";
 
-                            console.log("total length: " + absFiles.length + " - " + absCount);
-                            absCount++;
-                            insertCommand += value;
-                            TRACK_ID++;
-                        }
-                    });
-                });
-            }, 500);
-            callback(null, insertCommand);
-        }
-    ], function(err, results) {
-        console.log(results)
+                    var date = new Date().toString();
+                    var inputDate = date.substring(0, date.lastIndexOf(":") + 3);
+                    var value = "(" + TRACK_ID + ", '" + title + "', '" + album + "', '" + artist + "', " + year + ", '" + inputDate + "', " + trackNo + ", '" + inputAudioFileLocation + "')";
+                    if(absCount < absFilesArray.length){
+                        value += ", ";
+                    }
+                    console.log(value);
+                    insertCommand += value;
+                    absCount++;
+                    TRACK_ID++;
+                    callback(); //required for async library
+                }
+            });
+        }, function insertToDB (err) {
+                if (err) { throw err; }
+                console.log(insertCommand);
+            }
+        );
     });
 }
 
@@ -205,7 +184,7 @@ function getID3tag(inputAudioFileLocation){
  * @return: Array of absolute file paths.
  */
 
-function _getAllFilesFromFolder(dir) {
+function _getAllFilesFromFolder(dir, fn) {
     var results = [];
 
     //Read each file in the current directory
@@ -219,11 +198,6 @@ function _getAllFilesFromFolder(dir) {
         } else{
             results.push(file);
         }
-
     });
-    return results;
-}
-
-function asyncPrint(obj){
-    console.log(obj);
+    fn(results);
 }
