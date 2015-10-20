@@ -4,7 +4,7 @@
   },
   "database": {
     "initialized": true,
-    "id_increment_count": 1
+    "id_increment_count": 13
   },
   "filesystem": {
     "local_music_library": ""

@@ -49,7 +49,7 @@ app.get('/library', function(req, res){
 
 //BUILD MAIN PAGE
 app.get('/index', function(req, res){
-    fs.createReadStream('./public/src/index.txt').pipe(res);
+    filesystem.createReadStream('./public/src/index.txt').pipe(res);
 });
 
 io.on('connection', function (socket) {
@@ -63,7 +63,7 @@ io.on('connection', function (socket) {
     });
 });
 
-//BUILD MAIN PAGE
+//GET Total Number of Songs
 app.get('/songsTotal', function(req, res){
     var numberOfSongsJSONArr;
     flow.series([
@@ -91,7 +91,7 @@ app.get('/songsTotal', function(req, res){
  */
 
 function addMultipleSongs(dirOfSongs) {
-    var insertCommand = "INSERT INTO MYLIBRARY (TRACKID,SONG,ALBUM,ARTIST,YEAR,DATE_IMPORTED,ALBUM_TRACK_NO,FILE_LOCATION) VALUES ";
+    var insertCommand = "INSERT INTO MYLIBRARY (TRACKID,SONG,ALBUM,ARTIST,YEAR,DATE_IMPORTED,TRACK_NO,FILE_LOCATION) VALUES ";
     var TRACK_ID = config.configReader.database.id_increment_count;
     var absCount = 1;
 
@@ -127,58 +127,21 @@ function addMultipleSongs(dirOfSongs) {
                     callback(); //required for async library
                 }
             });
-        }, function insertToDB (err) {
+        }, function insert (err) {
                 if (err) { throw err; }
-                console.log(insertCommand);
+                database.insertToDB(insertCommand);
+                config.configWriter.set('database:id_increment_count', TRACK_ID);
+                config.configWriter.save(function(err){
+                    if(err) console.log("Could not write to config file");
+                    else console.log("Wrote changes to config file");
+                });
             }
         );
     });
 }
 
 //TEST
-addMultipleSongs("C:/Users/Khalil/Desktop/trolling/Metal Box");
-
-
-/* Return the ID3 tag for an mp3 at an absolute file location
- * @return: ID3 tag
- */
-
-function getID3tag(inputAudioFileLocation){
-    var returnTag;
-    id3({ file: inputAudioFileLocation, type: id3.OPEN_LOCAL }, function(err, tags) {
-        if(err){
-            console.log("Could not get id3 tags for: " + inputAudioFileLocation);
-            return null;
-        } else {
-            //Tags are passed as an object in the following format
-            /*
-            {
-                "artist": "Song artist",
-                "title": "Song name",
-                "album": "Song album",
-                "year": "2013",
-                "v1": {
-                "title": "ID3v1 title",
-                    "artist": "ID3v1 artist",
-                    "album": "ID3v1 album",
-                    "year": "ID3v1 year",
-                    "comment": "ID3v1 comment",
-                    "track": "ID3v1 track (e.g. 02)",
-                    "version": 1.0
-            },
-                "v2": {
-                "artist": "ID3v2 artist",
-                    "album": "ID3v2 album",
-                    "version": [4, 0]
-            }
-            }
-            See documentation at: https://www.npmjs.com/package/id3js
-            */
-            returnTag = tags;
-        }
-    });
-    return returnTag;
-}
+//addMultipleSongs("C:/Users/Khalil/Desktop/trolling/Metal Box");
 
 /* Recursively finds all of the files from a directory
  * @return: Array of absolute file paths.

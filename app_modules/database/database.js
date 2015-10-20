@@ -47,7 +47,7 @@ function getLibrary(){
             function (callback) {
                     setTimeout(function (){
                     db.each("SELECT * FROM MYLIBRARY ORDER BY ALBUM, TRACK_NO ", function(err, row) {
-                        if(err) console.log("There was an error");
+                        if(err) console.log("Library is empty");
                          else allRows.push(row);
                     });
                     callback();
@@ -57,6 +57,9 @@ function getLibrary(){
     //In JS, only Objects (this includes arrays) are pass by reference
     return allRows;
 }
+
+//tempInsert();
+
 
 //Temporary Insert, demonstrate how to perform inserts
 function tempInsert(){
@@ -71,6 +74,7 @@ function tempInsert(){
         //command += "(1, 'Blast Off', 'Junkyard', 'The Birthday Party', 1982, DateTime('now'), 1 ), ";
         //command += "(8, 'Kiss Me Black', 'Junkyard', 'The Birthday Party', 1982, DateTime('now'), 8 ); ";
         //var command = "DROP TABLE LIBRARY ";
+        var command = "PRAGMA table_info(MYLIBRARY); ";
        // command += "SELECT 3 As 'TRACKID', 'Dead Joe' As 'SONG', 'Junkyard' As 'ALBUM', 'The Birthday Party' As 'ARTIST', 1982 As 'YEAR', DateTime('now') As 'DATE_IMPORTED', 3 As 'ALBUM_TRACK_NO' ";
        // command += "UNION ALL SELECT 4, 'The Dim Locator', 'Junkyard', 'The Birthday Party', 1982, DateTime('now'), 4 ";
         db.run(command);
@@ -83,12 +87,24 @@ function getSongsTotal(){
     var arr = [];
     db.serialize(function () {
         db.each("SELECT COUNT(*) FROM MYLIBRARY ", function(err, row) {
-            if(err) console.log("There was an error");
-            else arr.push(row);
+            if(err){
+                arr.push({"count": 0});
+                console.log("No songs in library");
+            } else {
+
+            } arr.push(row);
         });
     });
     db.close();
     return arr;
+}
+
+function insertToDB(command){
+    var db = new sqlite3.Database(file);
+    db.serialize(function () {
+        db.run(command);
+        console.log("INSERT COMPLETE");
+    });
 }
 
 //*********EXPORTS*************
@@ -100,3 +116,6 @@ exports.getSongsTotal = function(){
     return getSongsTotal();
 };
 
+exports.insertToDB = function(command){
+    insertToDB(command);
+};

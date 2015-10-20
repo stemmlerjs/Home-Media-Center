@@ -19,6 +19,14 @@ $(document).ready(function () {
         searchType = "albumsearch";
     });
 
+    //Close the navbar when it is clicked
+    $('.collapse-buttons').click(function (event) {
+        var toggle = $(".navbar-toggle").is(":visible");
+        if (toggle) {
+            $(".navbar-collapse").collapse('hide');
+        }
+    });
+
 });
 
 //AJAX PAGE LOADING
