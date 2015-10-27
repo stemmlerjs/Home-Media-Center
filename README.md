@@ -1,13 +1,20 @@
-# CARCINOGEN - Home-Media-Center
+# CARCINOGEN 
+#### Home-Media-Center
 Node.Js LAN Home Media Center
 
-Goal:
--To provide a LAN Home Media Center that allows multiple users to do asynch playback of music using Socket.IO
--A user can boot up the LAN Media Center on their home network and serve files from a local hard drive
+Goal: *To provide a dynamic home media center, tailed for use at parties for home sound-synchronization*
 
 [Some] Features to implement
--Home Stations setup
--Object orientated clients
--Settings screen
--Add files to library using drag and drop
--Song voting / vetos
+    - Home Stations setup
+    - Object orientated clients
+    - Settings screen
+    - Add files to library using drag and drop
+    - Song voting / vetos
+
+* Dynamic monitoring of Home Stations
+* Object orientated clients
+* SocketIO communication and syncrhonization of songs between clients
+* Cross LAN Media libraries (drag and drop features)
+* Song voting / vetos
+* Mobile friendly
+
