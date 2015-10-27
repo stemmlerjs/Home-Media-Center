@@ -3,6 +3,7 @@
 Node.Js LAN Home Media Center
 
 Goal: *To provide a dynamic home media center, tailed for use at parties for home sound-synchronization*
+Status: *In Progress - Implementing synchronized streaming*
 
 [Some] Features to implement
     - Home Stations setup
