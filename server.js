@@ -2,6 +2,9 @@
  * Created by Khalil on 2015-10-11.
  */
 
+/********************************************************************************************************************/
+/*********************************************** START-UP ******************************************************/
+
 //Initialize Variables
 var express = require('express');
 var app = express();
@@ -12,9 +15,16 @@ var filesystem = require('fs');
 var id3 = require('id3js');
 var config = require('./config.js');
 var async = require('async');
+var media = require('mediaserver');
+var ss = require('socket.io-stream');
+var Client = require('./client.js');
+var ClientManager = require('./clientmanager.js');
 
 //Initialize database
 var database = require('./app_modules/database/database.js');
+
+//Client Manager
+var clientManager = new ClientManager();
 
 //Start server
 server.listen(config.configReader.network.port, function () {
@@ -24,6 +34,30 @@ server.listen(config.configReader.network.port, function () {
 //Make public directory routable
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/node_modules/socket.io/lib'));
+
+/********************************************************************************************************************/
+/*********************************************** SOCKET EVENT HANDLING **********************************************/
+
+io.on('connection', function (socket) {
+    var client = new Client(socket);
+    clientManager.addClient(client);
+    console.log("New connection via: " + client.IP_ADDRESS + ". SocketID: " + client.id);
+
+    socket.on('disconnect', function () {
+        console.log("socket disconnected");
+        socket.disconnect();
+        clientManager.removeClient(client);
+    });
+
+    //To tell who is playing what and at what time
+    socket.on('playingSong', function(data) {
+
+    });
+});
+
+/********************************************************************************************************************/
+/*********************************************** HTTP REQUESTS ******************************************************/
+
 
 //BUILD LIBRARY PAGE
 app.get('/library', function(req, res){
@@ -52,14 +86,14 @@ app.get('/index', function(req, res){
     filesystem.createReadStream('./public/src/index.txt').pipe(res);
 });
 
-io.on('connection', function (socket) {
-    var address = socket.handshake.address;
-    console.log('New connection from ' + address);
+//STREAM MUSIC
+app.get('/stream', function(req, res){
+    var SONG_ID = req.query.key;
 
-    //Do something when the client connects
-    socket.on('disconnect', function () {
-        console.log("socket disconnected");
-        socket.disconnect();
+    //Get TrackData
+    database.getSongViaKey(SONG_ID, function(trackData){ //Note: we passed the value for data up 3 callbacks to get here
+        console.log(trackData);
+        media.pipe(req, res, trackData.FILE_LOCATION);
     });
 });
 
@@ -81,6 +115,10 @@ app.get('/songsTotal', function(req, res){
         }
     ]);
 });
+
+/********************************************************************************************************************/
+/*********************************************** FUNCTIONS ******************************************************/
+
 
 /* addMultipleSongs - This function takes a directory of songs as a parameter, then gets information
  *      about each song before throwing it into an insert statement and running it against the database.
@@ -140,11 +178,9 @@ function addMultipleSongs(dirOfSongs) {
     });
 }
 
-//TEST
-//addMultipleSongs("C:/Users/Khalil/Desktop/trolling/Metal Box");
-
 /* Recursively finds all of the files from a directory
  * @return: Array of absolute file paths.
+ * @see: addMultipleSongs (function)
  */
 
 function _getAllFilesFromFolder(dir, fn) {
@@ -164,3 +200,5 @@ function _getAllFilesFromFolder(dir, fn) {
     });
     fn(results);
 }
+
+

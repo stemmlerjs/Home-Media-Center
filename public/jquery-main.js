@@ -28,8 +28,6 @@ $(document).ready(function () {
     });
 });
 
-var songSelection = "None";
-
 //AJAX PAGE LOADING
     function loadPage(page){
         //Get the DOM object of the drawing section of the page
@@ -51,7 +49,7 @@ var songSelection = "None";
             //Turn on Loader
             $('#spinner').css("visibility", "visible");
 
-        $.get( "library").done(function( data ) {
+        $.get("library").done(function( data ) {
                 createTable(JSON.parse(data));
 
             });
@@ -118,8 +116,29 @@ function readID3Tags(){
     //http://ericbidelman.tumblr.com/post/8343485440/reading-mp3-id3-tags-in-javascript
 }
 
-function songSelect(rowElement, key){
-    console.log(key);
-    console.log(rowElement);
+/* Function: songSelect
+ * Purpose: Perform the steps to find the location for a selected song, and request it to be streamed.
+ */
 
-}
+var songSelection = "None";
+//
+//function songSelect(rowElement, key){
+//    if(songSelection === rowElement){   //double click
+//        console.log("Play this song " + key);
+//        //do song logic
+//        $.get('stream?key=' + key).done(function(data) {
+//
+//        });
+//        //reset
+//        $(rowElement).children().css('background-color', '#222222');
+//        songSelection = "None";
+//
+//    } else if((songSelection !== rowElement) && (songSelection === 'None')){ //First select
+//        $(rowElement).children().css('background-color', 'blue');
+//        songSelection = rowElement;
+//    } else { //select a different song
+//        $(songSelection).children().css('background-color', '#222222');
+//        $(rowElement).children().css('background-color', 'blue');
+//        songSelection = rowElement;
+//    }
+//}
