@@ -4,9 +4,19 @@
     //Start a socket (connect)
     var socket = io('http://localhost:3000');
     var songSelection = "None";
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var source;
+    var nowPlaying = document.querySelector("#currentSongInfo");
 
     socket.on('message', function(inMessage){
        alert(inMessage.user + " send a message saying " + inMessage.text);
+    });
+
+    socket.on('getTrackInfo', function(trackInfo){
+        var artist = trackInfo.artist;
+        var song = trackInfo.song;
+        console.log(song + artist);
+        nowPlaying.innerHTML ='"' + song + ' by ' + artist +'"';
     });
 
 
@@ -16,22 +26,17 @@
     function songSelect(rowElement, key){
         if(songSelection === rowElement){   //double click
             console.log("Play this song " + key);
-            //do song logic
-            //$.get('stream?key=' + key).done(function(data) {
-            //    console.log(data);
-            //});
 
-            $.ajax({
-                url : 'stream?key=' + key,
-                dataType: "text",
-                success : function (fileLocation) {
-
-                }
+            //Start streaming/playing song
+            var songReq = 'stream?key=' + key;
+            streamSong(songReq, function(){
+                source.start(0);
             });
 
-            //socket.emit('playSong', {
-            //    SONG_ID: key
-            //});
+            //Update Now Playing Content
+            socket.emit('getTrackInfo', {
+                key: key
+            });
 
             //reset
             $(rowElement).children().css('background-color', '#222222');
@@ -47,6 +52,24 @@
         }
     }
 
+//https://github.com/mdn/decode-audio-data/blob/gh-pages/index.html
+function streamSong(songReq, callback) {
+    source = audioCtx.createBufferSource();
+    var request = new XMLHttpRequest();
+    request.open('GET', songReq, true);
+    request.responseType = 'arraybuffer';
+    request.onload = function() {
+        var audioData = request.response;
+        audioCtx.decodeAudioData(audioData, function(buffer) {
+                source.buffer = buffer;
+                source.connect(audioCtx.destination);
+                source.loop = true;
+            },
+            function(e){"Error with decoding audio data" + e.err});
+    };
+    request.send();
+    callback();
+}
 
 
 

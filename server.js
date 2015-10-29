@@ -50,7 +50,15 @@ io.on('connection', function (socket) {
     });
 
     //To tell who is playing what and at what time
-    socket.on('playingSong', function(data) {
+    socket.on('getTrackInfo', function(key) {
+        //Get TrackData
+        database.getSongViaKey(key, function(trackData){ //Note: we passed the value for data up 3 callbacks to get here
+            console.log(trackData);
+            socket.emit('getTrackInfo', {
+                artist: trackData.ARTIST,
+                song: trackData.SONG
+            });
+        });
 
     });
 });

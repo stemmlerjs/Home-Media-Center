@@ -8,6 +8,7 @@ var fs = require('fs');
 var file = './app_modules/database/mydb.db';
 var flow = require('nimble');
 var config = require(__dirname + '../../../config.js');
+var async = require('async');
 
 //Initialize Database
 setupLibrary();
@@ -90,14 +91,18 @@ function getSongsTotal(){
             if(err){
                 arr.push({"count": 0});
                 console.log("No songs in library");
-            } else {
-
-            } arr.push(row);
+            }
+            arr.push(row);
         });
     });
     db.close();
     return arr;
 }
+
+var getSongViaKey =  function(key, callback) {
+
+};
+
 
 function insertToDB(command){
     var db = new sqlite3.Database(file);
@@ -118,4 +123,30 @@ exports.getSongsTotal = function(){
 
 exports.insertToDB = function(command){
     insertToDB(command);
+};
+
+exports.getSongViaKey = function(key, mainCallback){
+    var db = new sqlite3.Database(file);
+    var songObj = {};
+
+    function retrieve(callback_containing_data){
+        db.serialize(function () {
+            db.each("SELECT * FROM MYLIBRARY WHERE TRACKID = " + key + " ", function(err, row) {
+                if(err){
+                    console.log("Error via getSongViaKey");
+                }
+                songObj = row;
+                db.close();
+                //Here we are saying, "if anything uses this function, it will have access to the
+                //data we are putting in the callback"
+                callback_containing_data(songObj);
+            });
+        });
+    }
+
+        //And then lets instantiate that function
+        retrieve(function(data){
+            //Then lets allow this data to be used just like here
+            mainCallback(data);
+        });
 };
