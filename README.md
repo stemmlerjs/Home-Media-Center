@@ -17,8 +17,8 @@ Status: *In Progress - Implementing synchronized streaming*
 * **Responsive Design**
 
 Base APIs used
-* **Web Audio API**
-* **Socket.IO**
-* **Express**
+* **[Web Audio API](http://webaudio.github.io/web-audio-api/)**
+* **[Socket.IO](https://github.com/socketio/socket.io)** 
+* **[Express](http://expressjs.com/)**
 
 
