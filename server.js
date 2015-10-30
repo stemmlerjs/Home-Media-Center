@@ -50,13 +50,21 @@ io.on('connection', function (socket) {
     });
 
     //To tell who is playing what and at what time
-    socket.on('getTrackInfo', function(key) {
+    socket.on('getTrackInfo', function(data) {
         //Get TrackData
-        database.getSongViaKey(key, function(trackData){ //Note: we passed the value for data up 3 callbacks to get here
-            console.log(trackData);
-            socket.emit('getTrackInfo', {
-                artist: trackData.ARTIST,
-                song: trackData.SONG
+        console.log("The key is is :" + data.key);
+        database.getSongViaKey(data.key, function(trackData){ //Note: we passed the value for data up 3 callbacks to get here
+            id3({file: trackData.FILE_LOCATION, type: id3.OPEN_LOCAL}, function(err, tags) {
+                var ALBUM_ARTWORK = tags.v2.image;
+                // tags now contains your ID3 tags
+                socket.emit('trackInfo', {
+                    artist: trackData.ARTIST,
+                    song: trackData.SONG,
+                    album: trackData.ALBUM,
+                    year: trackData.YEAR,
+                    track_no: trackData.TRACK_NO,
+                    album_artwork: ALBUM_ARTWORK
+                });
             });
         });
 

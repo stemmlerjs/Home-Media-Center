@@ -28,7 +28,8 @@ $(document).ready(function () {
     });
 });
 
-//AJAX PAGE LOADING
+/********************************************************************************************************************/
+/*********************************************** AJAX PAGE BUILDING **********************************************/
     function loadPage(page){
         //Get the DOM object of the drawing section of the page
         var allContent = document.getElementById("bodyContent");
@@ -53,10 +54,7 @@ $(document).ready(function () {
                 createTable(JSON.parse(data));
 
             });
-            //[{"TRACKID":1,"SONG":"Albatross","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979, "DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":1,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/01 Albatross.mp3"},
-            //    {"TRACKID":2,"SONG":"Memories","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":2,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/02 Memories.mp3"},{"TRACKID":3,"SONG":"Swan Lake","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":3,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/03 Swan Lake.mp3"},
-            //    {"TRACKID":4,"SONG":"Poptones","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":4,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/04 Poptones.mp3"},{"TRACKID":5,"SONG":"Careering","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":5,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/05 Careering.mp3"},{"TRACKID":6,"SONG":"No Birds","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":6,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/06 No Birds.mp3"},{"TRACKID":7,"SONG":"Graveyard","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":7,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/07 Graveyard.mp3"},{"TRACKID":8,"SONG":"The Suit","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":8,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/08 The Suit.mp3"},{"TRACKID":9,"SONG":"Bad Baby","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":9,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/09 Bad Baby.mp3"},{"TRACKID":10,"SONG":"Socialist","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":10,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/10 Socialist.mp3"},{"TRACKID":11,"SONG":"Chant","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":11,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/11 Chant.mp3"},{"TRACKID":12,"SONG":"Radio 4","ALBUM":"Metal Box","ARTIST":"Public Image Ltd","YEAR":1979,"DATE_IMPORTED":"Mon Oct 19 2015 20:47:38","TRACK_NO":12,"FILE_LOCATION":"C:/Users/Khalil/Desktop/trolling/Metal Box/12 Radio 4.mp3"}]
-            //
+
         function createTable(tabledata){
             //CREATE THE LIBRARY TABLE
             var html = "<table id='tracklist-table'><tr class='track-row'><th>Song</th><th>Artist</th><th>Album</th><th>Year</th></tr>";
@@ -69,6 +67,8 @@ $(document).ready(function () {
                 html += "<td>" + value.YEAR + "</td></tr>";
             });
             html += "</tbody>";
+    //TEMP - Build Large media player to display Album Artwork
+            html += "<img id='album-artwork' src=''>";
 
             //Put the table on the screen
             $('#bodyContent').append(html);
@@ -110,35 +110,3 @@ function updateSongTotal(){
         }
     });
 }
-
-function readID3Tags(){
-    //http://stackoverflow.com/questions/20212560/read-id3-v2-4-tags-with-native-chrome-javascript-filereader-dataview?lq=1
-    //http://ericbidelman.tumblr.com/post/8343485440/reading-mp3-id3-tags-in-javascript
-}
-
-/* Function: songSelect
- * Purpose: Perform the steps to find the location for a selected song, and request it to be streamed.
- */
-
-var songSelection = "None";
-//
-//function songSelect(rowElement, key){
-//    if(songSelection === rowElement){   //double click
-//        console.log("Play this song " + key);
-//        //do song logic
-//        $.get('stream?key=' + key).done(function(data) {
-//
-//        });
-//        //reset
-//        $(rowElement).children().css('background-color', '#222222');
-//        songSelection = "None";
-//
-//    } else if((songSelection !== rowElement) && (songSelection === 'None')){ //First select
-//        $(rowElement).children().css('background-color', 'blue');
-//        songSelection = rowElement;
-//    } else { //select a different song
-//        $(songSelection).children().css('background-color', '#222222');
-//        $(rowElement).children().css('background-color', 'blue');
-//        songSelection = rowElement;
-//    }
-//}
