@@ -1,6 +1,8 @@
 /* ==== Google font ==== */
 @import url('http://fonts.googleapis.com/css?family=Lato:400,300,700,900');
 
+html, body { height:100%; margin:0; padding:0; }
+
 #titlething{
     font-family: 'Lato';
     font-weight: bold;
@@ -20,10 +22,15 @@
     background:     -ms-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%); /* IE10 */
     background:      -o-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%); /* Opera 11.10+ */
     background:         linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%); /* W3C */    
+    
+    height:100%;
 }
 
 #bodyContent{
     padding-top:90px;
+    width:inherit;
+    margin-left: 15px;
+    margin-right: 15px;
 
 }
 
@@ -190,4 +197,41 @@ td{
     height: 20px;
     background-color: #222;
     border-color: #080808;
+}
+
+#small-album-pic-div{
+    height:100px;
+    width:100px;
+}
+
+#small-album-artwork{
+    width:100%;
+}
+
+#now-playing-page{
+    width: 100%;
+}
+
+#now-playing-artwork{
+    display: block;
+    margin-left: auto;
+    width: 100%;
+}
+
+#player{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#insertHere {
+    width:100%; 
+    margin:0; 
+    padding:0   
+}
+
+#now {
+     width: 100%; 
+    height: 400px; 
+ overflow:hidden;   
 }

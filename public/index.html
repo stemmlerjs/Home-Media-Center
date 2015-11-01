@@ -56,7 +56,9 @@
                                 </div>
                                 
                                 <div class="btn-group btn-group-sm" role="group" aria-label="...">
-                                    <button type="button" class="btn btn-default">Large Player</button>
+                                    <div id="small-album-pic-div" onClick="loadPage('player')">
+                                        <img id='small-album-artwork' src=''>
+                                    </div>
                                 </div>
                             </li>
                         </ul>
@@ -88,7 +90,8 @@
     </nav>
 
     <div id="insertHere" class="container-fluid">
-        <div id="bodyContent">
+
+        <div id="bodyContent" class="row">
             <!-- WELCOME MESSAGE-->
             <div class="container">
                 <h1 style="font-family: 'Oswald', sans-serif;">Welcome Home!</h1>
@@ -224,7 +227,7 @@
         </div>
     </div>
 
-    <div id="spinner" class="spinner" style="visibility: hidden;"></div>
+    <div id="spinner" class="spinner-disabled" style="visibility: hidden;"></div>
     <div id="result" style="clear: both;"></div>
 
     <script type="text/javascript">

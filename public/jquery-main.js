@@ -26,19 +26,24 @@ $(document).ready(function () {
             $(".navbar-collapse").collapse('hide');
         }
     });
+
+
+    
 });
 
 /********************************************************************************************************************/
 /*********************************************** AJAX PAGE BUILDING **********************************************/
     function loadPage(page){
         //Get the DOM object of the drawing section of the page
+        var allContentWrapper = document.getElementById("insertHere");
         var allContent = document.getElementById("bodyContent");
 
         //On every page load, check for library length changes
         updateSongTotal();
 
         //Clear the content currently on the page
-        $(allContent).empty();
+        $(allContentWrapper).empty();
+        $(allContentWrapper).append("<div id='bodyContent'></div>");
 
         if(page === 'library'){
             var toolbar = "<ul class='nav nav-pills' role='tablist'>";
@@ -49,6 +54,8 @@ $(document).ready(function () {
 
             //Turn on Loader
             $('#spinner').css("visibility", "visible");
+            $("#spinner").toggleClass('spinner-disabled spinner');
+            console.log("turning on spinner");
 
         $.get("library").done(function( data ) {
                 createTable(JSON.parse(data));
@@ -67,15 +74,14 @@ $(document).ready(function () {
                 html += "<td>" + value.YEAR + "</td></tr>";
             });
             html += "</tbody>";
-    //TEMP - Build Large media player to display Album Artwork
-            html += "<img id='album-artwork' src=''>";
 
             //Put the table on the screen
             $('#bodyContent').append(html);
 
             //Reset Loader
             $("#spinner").fadeOut(500);
-            resetLoader(500);
+            $("#spinner").toggleClass('spinner spinner-disabled');
+            resetLoader(300);
         }
         } else if(page === 'index'){
             $.ajax({
@@ -86,13 +92,34 @@ $(document).ready(function () {
                 }
             });
             resetLoader(0);
+        } else if(page === 'player'){
+            $(allContentWrapper).empty();
+            console.log("player pls");
+            $.ajax({
+                url : "player",
+                dataType: "text",
+                success : function (data) {
+                    $('#insertHere').append(data);
+                    //Place album artwork
+                    $('#now-playing-artwork').attr("src", $('#small-album-artwork').attr("src"));
+
+                    //Resize the Album Artwork to only take up the full viewport
+                    var art = document.querySelector('#now');
+                    $('#now').css('height', window.innerHeight - 15);
+
+                    window.onresize = function(){
+                        $('#now').css('height', window.innerHeight - 15);
+                    };
+                }
+            });
+            resetLoader(0);
         }
-        function resetLoader(timeout){
-            setTimeout(function() {
-                $('#spinner').css("visibility", "hidden");
-                $('#spinner').css("display", "");
-            },timeout);
-        }
+}
+function resetLoader(timeout){
+    setTimeout(function() {
+        $('#spinner').css("visibility", "hidden");
+        $('#spinner').css("display", "");
+    },timeout);
 }
 
 function updateSongTotal(){
@@ -110,3 +137,4 @@ function updateSongTotal(){
         }
     });
 }
+

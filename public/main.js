@@ -168,7 +168,7 @@ function setAlbumArtwork(trackInfo){
     var bytes = new Uint8Array(arrayBuffer);
     var blob = new Blob([bytes], {'type': mimetype});
     var url = URL.createObjectURL(blob); //different prefixes for different vendors
-    var image = document.getElementById('album-artwork');
+    var image = document.getElementById('small-album-artwork');
     image.src = url;
 }
 

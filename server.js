@@ -102,6 +102,11 @@ app.get('/index', function(req, res){
     filesystem.createReadStream('./public/src/index.txt').pipe(res);
 });
 
+//LOAD THE PLAYER
+app.get('/player', function(req, res){
+    filesystem.createReadStream('./public/src/player.txt').pipe(res);
+});
+
 //STREAM MUSIC
 app.get('/stream', function(req, res){
     var SONG_ID = req.query.key;
