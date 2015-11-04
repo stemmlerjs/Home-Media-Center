@@ -19,7 +19,12 @@
     <div id="bottom"></div>
     <!--NAVBAR -->
     <nav class="navbar navbar-inverse navbar-fixed-top" style="padding:11px; padding-bottom:4px;">
-        <div class="container-fluid">
+        <div class="navbar-brand" style="border: 4px solid white; text-decoration: none; padding-top: 5px; padding-bottom: 10px; margin-left:4px;">
+                    <!-- LOGO -->
+                    <a class="collapse-buttons" onClick="loadPage('index')" href="javascript:void(0);" style="text-decoration: none;">
+                        <h1 style="font-size: 30px; margin: 0; color:white;">Carcinogen</h1></a>
+                </div>
+        <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div style="padding-left:3px; padding-bottom:3px;" class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -29,11 +34,6 @@
                     <span class="icon-bar"></span>
                 </button>
 
-                <div class="navbar-brand" style="border: 4px solid white; text-decoration: none; padding-top: 5px; padding-bottom: 10px;">
-                    <!-- LOGO -->
-                    <a class="collapse-buttons" onClick="loadPage('index')" href="javascript:void(0);" style="text-decoration: none;">
-                        <h1 style="font-size: 30px; margin: 0; color:white;">Carcinogen</h1></a>
-                </div>
             </div>
             <div class="">
 
@@ -89,20 +89,22 @@
         <!-- /.container-fluid -->
     </nav>
 
-    <div id="insertHere" class="container-fluid">
+    <div id="insertHere" class="container">
 
         <div id="bodyContent" class="row">
             <!-- WELCOME MESSAGE-->
-            <div class="container">
-                <h1 style="font-family: 'Oswald', sans-serif;">Welcome Home!</h1>
-                <p class="lead"><span class="glyphicon glyphicon-headphones" aria-hidden="true"></span> See what's being played around the house</p>
+            <div class="row">
+                <div class="span12"><h1 style="font-family: 'Oswald', sans-serif;">Welcome Home!</h1></div>
+                <div class="span12"> <p class="lead"><span class="glyphicon glyphicon-headphones" aria-hidden="true"></span> See what's being played around the house</p></div>
+               
             </div>
 
             <!-- DYNAMICALLY GENERATED INFORMATION ABOUT WHO IS PLAYING WHAT, etc. (STATIC FOR NOW) -->
 
             <div>
-                <div class="container" style="background-color: black; height:30px; overflow:hidden">
-                    <h4 style="color: white;margin-top: 7px;">Now Playing - <span style="color:grey"><small>Living Room [Station A], Khalil's Room [Station B], Study [Station D]</small></span></h4>
+                <div class="row" id="welcome-listeners" style="">
+                    <div class="span12"><h4 style="color: white;margin-top: 7px; overflow:hidden;">Now Playing - <span style="color:grey"><small>Living Room [Station A], Khalil's Room [Station B], Study [Station D]                              </small></span></h4></div>
+                    
                 </div>
 
                 <!--    NOW PLAYING 1    -->

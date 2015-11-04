@@ -46,12 +46,6 @@ $(document).ready(function () {
         $(allContentWrapper).append("<div id='bodyContent'></div>");
 
         if(page === 'library'){
-            var toolbar = "<ul class='nav nav-pills' role='tablist'>";
-            toolbar += "<li id='addMusic' role='presentation' style='background-color: #333; line-height: 1.42857143; border-radius:3px;'>";
-            toolbar += "<a data-toggle='modal' data-target='#addMusicForm' href='javascript:void(0);'>Add Music</a></li>";
-            toolbar += "</ul><div style='margin-bottom:10px;'></div>";
-            $('#bodyContent').append(toolbar);
-
             //Turn on Loader
             $('#spinner').css("visibility", "visible");
             $("#spinner").toggleClass('spinner-disabled spinner');
@@ -67,13 +61,24 @@ $(document).ready(function () {
             var html = "<table id='tracklist-table'><tr class='track-row'><th>Song</th><th>Artist</th><th>Album</th><th>Year</th></tr>";
                 html += "<tbody>";
             $.each(tabledata, function(key, value){
-                html += "<tr class='track-row' onclick='songSelect(this," + value.TRACKID + ");' data-track-key='" + value.TRACKID + "'>";
-                html += "<td class='name-time'><div class='play-track' style='cursor: pointer;'></div>" + value.SONG + "</td>";
-                html += "<td>" + value.ARTIST + "</td>";
-                html += "<td>" + value.ALBUM + "</td>";
-                html += "<td>" + value.YEAR + "</td></tr>";
+                var TRACKID = value.TRACKID;
+                var SONG = _safeProofTextUndo(value.SONG);
+                var ARTIST = _safeProofTextUndo(value.ARTIST);
+                var ALBUM = _safeProofTextUndo(value.ALBUM);
+                var YEAR = _safeProofTextUndo(value.YEAR);
+
+                html += "<tr class='track-row' onclick='songSelect(this," + TRACKID + ");' data-track-key='" + TRACKID + "'>";
+                html += "<td class='name-time'><div class='play-track' style='cursor: pointer;'></div>" + SONG + "</td>";
+                html += "<td>" + ARTIST + "</td>";
+                html += "<td>" + ALBUM + "</td>";
+                html += "<td>" + YEAR + "</td></tr>";
             });
             html += "</tbody>";
+
+            //html += "<div class='progress'>";
+            //html += "<div class='progress-bar' role='progressbar' aria-valuenow='70'";
+            //html += "aria-valuemin='0' aria-valuemax='100' style='width:0%'>";
+            //html += "<span class='sr-only'>70% Complete</span></div></div>";
 
             //Put the table on the screen
             $('#bodyContent').append(html);
@@ -136,5 +141,14 @@ function updateSongTotal(){
             $('#librarySongCount').text(value.substring((value.indexOf(':') + 1), value.length - 1));
         }
     });
+}
+
+function _safeProofTextUndo(text){
+    text = text + "";
+    text = text.replace("**dbl**", '"');
+    text = text.replace("**sgl**","'");
+    text = text.replace("**op**","(");
+    text = text.replace("**cl**",")");
+    return text;
 }
 

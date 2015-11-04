@@ -54,15 +54,15 @@ io.on('connection', function (socket) {
         //Get TrackData
         console.log("The key is is :" + data.key);
         database.getSongViaKey(data.key, function(trackData){ //Note: we passed the value for data up 3 callbacks to get here
-            id3({file: trackData.FILE_LOCATION, type: id3.OPEN_LOCAL}, function(err, tags) {
+            id3({file: _safeProofTextUndo(trackData.FILE_LOCATION), type: id3.OPEN_LOCAL}, function(err, tags) {
                 var ALBUM_ARTWORK = tags.v2.image;
                 // tags now contains your ID3 tags
                 socket.emit('trackInfo', {
-                    artist: trackData.ARTIST,
-                    song: trackData.SONG,
-                    album: trackData.ALBUM,
-                    year: trackData.YEAR,
-                    track_no: trackData.TRACK_NO,
+                    artist:  _safeProofTextUndo(trackData.ARTIST),
+                    song: _safeProofTextUndo(trackData.SONG),
+                    album: _safeProofTextUndo(trackData.ALBUM),
+                    year: _safeProofTextUndo(trackData.YEAR),
+                    track_no: _safeProofTextUndo(trackData.TRACK_NO),
                     album_artwork: ALBUM_ARTWORK
                 });
             });
@@ -114,7 +114,7 @@ app.get('/stream', function(req, res){
     //Get TrackData
     database.getSongViaKey(SONG_ID, function(trackData){ //Note: we passed the value for data up 3 callbacks to get here
         console.log(trackData);
-        media.pipe(req, res, trackData.FILE_LOCATION);
+        media.pipe(req, res, _safeProofTextUndo(trackData.FILE_LOCATION));
     });
 });
 
@@ -149,6 +149,8 @@ app.get('/songsTotal', function(req, res){
  * when all items have been iterated over OR when the callback() throws an error like callback(new Error()).
  */
 
+
+
 function addMultipleSongs(dirOfSongs) {
     var insertCommand = "INSERT INTO MYLIBRARY (TRACKID,SONG,ALBUM,ARTIST,YEAR,DATE_IMPORTED,TRACK_NO,FILE_LOCATION) VALUES ";
     var TRACK_ID = config.configReader.database.id_increment_count;
@@ -161,11 +163,11 @@ function addMultipleSongs(dirOfSongs) {
                     console.log("Could not get id3 tags for: " + inputAudioFileLocation);
                 } else {
                     //We want to create a database INSERT
-                    var title = tags.title;
-                    var artist = tags.artist;
-                    var album = tags.album;
-                    var year = tags.year;
-                    var trackNo = tags.v1.track;
+                    var title = _safeProofText(tags.title);
+                    var artist = _safeProofText(tags.artist);
+                    var album = _safeProofText(tags.album);
+                    var year = _safeProofText(tags.year);
+                    var trackNo = _safeProofText(tags.v1.track);
 
                     if(typeof title === undefined) title = "";
                     if(typeof artist === undefined) artist = "";
@@ -173,9 +175,11 @@ function addMultipleSongs(dirOfSongs) {
                     if(typeof year === undefined) year = "";
                     if(typeof trackNo === undefined) trackNo = "";
 
+                    console.log(typeof title);
+
                     var date = new Date().toString();
                     var inputDate = date.substring(0, date.lastIndexOf(":") + 3);
-                    var value = "(" + TRACK_ID + ", '" + title + "', '" + album + "', '" + artist + "', " + year + ", '" + inputDate + "', " + trackNo + ", '" + inputAudioFileLocation + "')";
+                    var value = "(" + TRACK_ID + ", '" + title + "', '" + album + "', '" + artist + "', " + year + ", '" + inputDate + "', " + trackNo + ", '" + _safeProofText(inputAudioFileLocation) + "')";
                     if(absCount < absFilesArray.length){
                         value += ", ";
                     }
@@ -188,11 +192,16 @@ function addMultipleSongs(dirOfSongs) {
             });
         }, function insert (err) {
                 if (err) { throw err; }
-                database.insertToDB(insertCommand);
-                config.configWriter.set('database:id_increment_count', TRACK_ID);
-                config.configWriter.save(function(err){
-                    if(err) console.log("Could not write to config file");
-                    else console.log("Wrote changes to config file");
+                database.insertToDB(insertCommand, function updateConfig(success){
+                    if(success){
+                        config.configWriter.set('database:id_increment_count', TRACK_ID);
+                        config.configWriter.save(function(err){
+                            if(err) console.log("INSERT - Could not write to config file");
+                            else console.log("INSERT - Wrote changes to config file");
+                        });
+                    } else {
+                        console.log("INSERT - Did not write changes to config file");
+                    }
                 });
             }
         );
@@ -222,4 +231,28 @@ function _getAllFilesFromFolder(dir, fn) {
     fn(results);
 }
 
+
+/*************************************************************************************************************/
+/*********************************************** TEST FUNCTIONS **********************************************/
+/************** (All functions are to start here before they are moved into their appropriate section) *******/
+
+function _safeProofText(text){
+    text = text + "";
+    text = text.replace('\0', ''); // 10
+    text = text.replace(/\0/g, '');
+    text = text.replace(/["]/g,"**dbl**");
+    text = text.replace(/[']/g,"**sgl**");
+    text = text.replace(/[(]/g,"**op**");
+    text = text.replace(/[)]/g,"**cl**");
+    return text;
+}
+
+function _safeProofTextUndo(text){
+    text = text + "";
+    text = text.replace("**dbl**", '"');
+    text = text.replace("**sgl**","'");
+    text = text.replace("**op**","(");
+    text = text.replace("**cl**",")");
+    return text;
+}
 

@@ -104,11 +104,18 @@ var getSongViaKey =  function(key, callback) {
 };
 
 
-function insertToDB(command){
+function insertToDB(command, callback){
     var db = new sqlite3.Database(file);
     db.serialize(function () {
-        db.run(command);
-        console.log("INSERT COMPLETE");
+            db.run(command, function(err){
+                if(err){
+                    console.log("INSERT - an error was thrown");
+                    callback(false);
+                } else {
+                    console.log("INSERT - INSERT COMPLETE");
+                    callback(true);
+                }
+            });
     });
 }
 
@@ -121,8 +128,10 @@ exports.getSongsTotal = function(){
     return getSongsTotal();
 };
 
-exports.insertToDB = function(command){
-    insertToDB(command);
+exports.insertToDB = function(command, callback){
+    insertToDB(command, function(success){
+        callback(success);
+    });
 };
 
 exports.getSongViaKey = function(key, mainCallback){

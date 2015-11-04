@@ -17,6 +17,13 @@
     var currentAlbum;
     var currentAlbumArtwork;
 
+    var nextKey = "";
+    var prevKey = "";
+    var rowSelection;
+
+    var _currentAudioPosition = 0;
+    var _interval;
+
 /********************************************************************************************************************/
 /*********************************************** SOCKET EVENT HANDLING **********************************************/
 
@@ -36,6 +43,10 @@
         nowPlaying.innerHTML = '"' + currentSong + " by " + currentArtist + '"';
     });
 
+    socket.on('setNextPrev', function(nextPrevInfo){
+        nextSongKey = nextPrevInfo.nextKey;
+        prevSongKey = nextPrevInfo.prevKey;
+    });
 /********************************************************************************************************************/
 /*********************************************** AUDIO CONTROLS  **********************************************/
 
@@ -57,14 +68,45 @@
     //TRACK BACK
     $(".track-back").click(function(){
         source.stop();
+        _currentAudioPosition = 0;
         playFromBeginning(globalBuffer);
+    });
+
+    //TRACK Forward
+    $(".track-forward").click(function(){
+        if((nextKey !== "") && (nextKey !== undefined) && (rowSelection !== undefined)){
+            //Stop timer
+            _stopTimer();
+
+            //Start streaming/playing song
+            var songReq = 'stream?key=' + nextKey;
+            loadSong(songReq, function(){
+                source.start(0);
+                playStatus = 'playing';
+                $("#playPause").toggleClass('glyphicon-pause glyphicon-pause');
+            });
+
+            //Update Now Playing Content
+            socket.emit('getTrackInfo', {
+                key: nextKey
+            });
+
+            //Set Next / Prev songs
+            getNextPrev(rowSelection);
+
+            //reset
+            $(rowSelection).children().css('background-color', '#222222');
+            songSelection = "None";
+        }
     });
 
 /********************************************************************************************************************/
 /*********************************************** FUNCTIONS **********************************************/
 
     function songSelect(rowElement, key){
+        rowSelection = rowElement;
         if(songSelection === rowElement){   //double click
+            _stopTimer();
             console.log("Play this song " + key);
 
             //Start streaming/playing song
@@ -79,6 +121,9 @@
             socket.emit('getTrackInfo', {
                 key: key
             });
+
+            //Set Next / Prev songs
+            getNextPrev(rowElement);
 
             //reset
             $(rowElement).children().css('background-color', '#222222');
@@ -115,7 +160,7 @@ function loadSong(songReq, callback) {
                 globalBuffer = buffer;
                 source.buffer = buffer;
                 source.connect(audioCtx.destination);
-                source.loop = true;
+                startTrackingAudioPosition();
             },
             function(e){"Error with decoding audio data" + e.err});
     };
@@ -159,6 +204,7 @@ function loadProcess(){
     $('#footer').css('visibility', 'visible');
     loadingText.innerHTML = "Loading...";
     SONG_IS_LOADING = true;
+    getNextPrev(rowSelection);
     songLoadingAnimation();
 }
 
@@ -172,9 +218,76 @@ function setAlbumArtwork(trackInfo){
     image.src = url;
 }
 
+function getNextPrev(rowElement){
+    nextKey = $(rowElement).next().attr('data-track-key');
+    prevKey = $(rowElement).prev().attr('data-track-key');
+}
+
 /*************************************************************************************************************/
 /*********************************************** TEST FUNCTIONS **********************************************/
 /************** (All functions are to start here before they are moved into their appropriate section) *******/
+
+
+
+var startTrackingAudioPosition = function() {
+    _currentAudioPosition = 0;
+    _interval = setInterval(_timer, 10);
+};
+
+var _timer = function(){
+    if(audioCtx.state === 'running'){
+        _currentAudioPosition += 0.10;
+        //$('.progress-bar').attr("style", "width:" + audioCtx.duration / _currentAudioPosition + "%");
+        console.log("Current Time - " + (_currentAudioPosition / 10) + " -  : Length - " + source.buffer.duration);
+    }
+
+    if((_currentAudioPosition / 10) >= source.buffer.duration){
+        console.log("NEXT SONG!!");
+        _stopTimer();
+        loadNextTrack();
+    }
+};
+
+    var _stopTimer = function(){
+        _currentAudioPosition = 0;
+        if (_interval) {
+            clearInterval(_interval);
+            _interval = null;
+        }
+    };
+
+var loadNextTrack = function(){
+    if((nextKey !== "") && (nextKey !== undefined)){
+        //Start streaming/playing song
+        var songReq = 'stream?key=' + nextKey;
+        loadSong(songReq, function(){
+            source.start(0);
+            playStatus = 'playing';
+            $("#playPause").toggleClass('glyphicon-pause glyphicon-pause');
+        });
+
+        //Update Now Playing Content
+        socket.emit('getTrackInfo', {
+            key: nextKey
+        });
+
+        //Set Next / Prev songs
+        getNextPrev(rowElement);
+
+        //reset
+        $(rowElement).children().css('background-color', '#222222');
+        songSelection = "None";
+    }
+};
+
+//Current Issue
+/**
+ * rowSelection = rowElement;
+ * rowSelection is not globally updated after it moves to the next song automatically, so when it goes to play another
+ * song after it automatically finishes, it just repeats the LAST song.
+ *
+ * This should be easy to fix, just move things around and make methods clear and simple
+ */
 
 
 
