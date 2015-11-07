@@ -36,11 +36,11 @@ html, body { height:100%; margin:0; padding:0; }
 
 #welcome-listeners {
     background-color: black; 
-    height:30px; 
+    height:32px;
     overflow:hidden;
     margin-bottom: 5px;
-    margin-left:30px;
-    margin-right:30px;
+    /*margin-left:30px;*/
+    /*margin-right:30px;*/
 }
 
 #carcinogenTitleDiv{
@@ -244,4 +244,9 @@ td{
      width: 100%; 
     height: 400px; 
  overflow:hidden;   
+}
+
+/*Animation speed for progress bar*/
+.progress.active .progress-bar, .progress-bar.active {
+    animation: 4s linear 0s normal none infinite running progress-bar-stripes;
 }

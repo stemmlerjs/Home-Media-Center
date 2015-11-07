@@ -34,6 +34,7 @@ server.listen(config.configReader.network.port, function () {
 //Make public directory routable
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/node_modules/socket.io/lib'));
+app.use(express.favicon(__dirname  + "/public/src/favicon.ico"));
 
 /********************************************************************************************************************/
 /*********************************************** SOCKET EVENT HANDLING **********************************************/

@@ -75,10 +75,10 @@ $(document).ready(function () {
             });
             html += "</tbody>";
 
-            //html += "<div class='progress'>";
-            //html += "<div class='progress-bar' role='progressbar' aria-valuenow='70'";
-            //html += "aria-valuemin='0' aria-valuemax='100' style='width:0%'>";
-            //html += "<span class='sr-only'>70% Complete</span></div></div>";
+            html += "<div class='progress'>";
+            html += "<div class='progress-bar progress-bar-striped active' id='thisprogress' role='progressbar' aria-valuemin='0' aria-valuemax='100' style='width:0%'>";
+            html += "<span class='sr-only'></span></div></div>";
+
 
             //Put the table on the screen
             $('#bodyContent').append(html);
