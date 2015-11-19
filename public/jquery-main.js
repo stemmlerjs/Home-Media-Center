@@ -26,10 +26,29 @@ $(document).ready(function () {
             $(".navbar-collapse").collapse('hide');
         }
     });
-
-
-    
 });
+
+
+/********************************************************************************************************************/
+/*********************************************** MUSIC PLAYER ANIMATION ******************************************/
+var _pictureAnimationInterval;
+var _currentPicturePosition = -50;
+var inc = true;
+var _animatePic = function(){
+    if(inc){
+        _currentPicturePosition = _currentPicturePosition + 0.2;
+        if(_currentPicturePosition >= 5){
+            inc = false;
+        }
+    } else {
+        _currentPicturePosition = _currentPicturePosition - 0.2;
+        if(_currentPicturePosition <= -50){
+            inc = true;
+        }
+    }
+    $('#now').css('top', _currentPicturePosition + '%');
+};
+
 
 /********************************************************************************************************************/
 /*********************************************** AJAX PAGE BUILDING **********************************************/
@@ -69,14 +88,14 @@ $(document).ready(function () {
 
                 html += "<tr class='track-row' onclick='songSelect(this," + TRACKID + ");' data-track-key='" + TRACKID + "'>";
                 html += "<td class='name-time'><div class='play-track' style='cursor: pointer;'></div>" + SONG + "</td>";
-                html += "<td>" + ARTIST + "</td>";
-                html += "<td>" + ALBUM + "</td>";
-                html += "<td>" + YEAR + "</td></tr>";
+                html += "<td class='track-artist'>" + ARTIST + "</td>";
+                html += "<td class='track-album'>" + ALBUM + "</td>";
+                html += "<td class='track-year'>" + YEAR + "</td></tr>";
             });
             html += "</tbody>";
 
             html += "<div class='progress'>";
-            html += "<div class='progress-bar progress-bar-striped active' id='thisprogress' role='progressbar' aria-valuemin='0' aria-valuemax='100' style='width:0%'>";
+            html += "<div class='progress-bar progress-bar-striped active this-progress-bar' role='progressbar' aria-valuemin='0' aria-valuemax='100' style='width:0%'>";
             html += "<span class='sr-only'></span></div></div>";
 
 
@@ -99,22 +118,20 @@ $(document).ready(function () {
             resetLoader(0);
         } else if(page === 'player'){
             $(allContentWrapper).empty();
-            console.log("player pls");
             $.ajax({
                 url : "player",
                 dataType: "text",
                 success : function (data) {
                     $('#insertHere').append(data);
+
                     //Place album artwork
                     $('#now-playing-artwork').attr("src", $('#small-album-artwork').attr("src"));
 
-                    //Resize the Album Artwork to only take up the full viewport
-                    var art = document.querySelector('#now');
-                    $('#now').css('height', window.innerHeight - 15);
+                    //Animate Album Artwork
+                    stopPictureAnimationInterval();
+                    _pictureAnimationInterval = setInterval(_animatePic, 250);
+                    _pictureAnimationInterval();
 
-                    window.onresize = function(){
-                        $('#now').css('height', window.innerHeight - 15);
-                    };
                 }
             });
             resetLoader(0);
@@ -151,4 +168,11 @@ function _safeProofTextUndo(text){
     text = text.replace("**cl**",")");
     return text;
 }
+
+var stopPictureAnimationInterval = function(){
+    if (_pictureAnimationInterval) {
+        clearInterval(_pictureAnimationInterval);
+        _pictureAnimationInterval = null;
+    }
+};
 

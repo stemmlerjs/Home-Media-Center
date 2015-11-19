@@ -240,13 +240,30 @@ td{
     padding:0   
 }
 
-#now {
-     width: 100%; 
-    height: 400px; 
- overflow:hidden;   
-}
 
 /*Animation speed for progress bar*/
 .progress.active .progress-bar, .progress-bar.active {
     animation: 4s linear 0s normal none infinite running progress-bar-stripes;
+}
+
+#now {
+    position: fixed;
+    top: -50%;
+    left: -25%;
+    width: 150%;
+    height: 200%;
+}
+#now img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    min-width: 50%;
+    min-height: 50%;
+}
+
+.this-progress-bar{
+
 }

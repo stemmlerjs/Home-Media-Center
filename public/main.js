@@ -42,6 +42,11 @@
         currentArtist = trackInfo.artist;
         currentAlbum = trackInfo.album;
 
+        //currentSong = currentSelection.getElementsByClassName('name-time')[0].textContent;
+        //currentArtist = currentSelection.getElementsByClassName('track-artist')[0].textContent;
+        //currentAlbum = currentSelection.getElementsByClassName('track-album')[0].textContent;
+        console.log();
+
         nowPlaying.innerHTML = '"' + currentSong + " by " + currentArtist + '"';
     });
 
@@ -76,35 +81,7 @@
 
     //TRACK Forward
     $(".track-forward").click(function(){
-        if((nextKey !== "") && (nextKey !== undefined) && (currentSelection !== undefined)){
-            //Stop timer
-            _stopTimer();
-
-            //Set Next / Prev songs
-            currentSelection = currentSelection.nextSibling;
-
-            //Set Next / Prev songs
-            setNextPrev(currentSelection);
-
-            var currentKey = $(currentSelection).attr('data-track-key');
-
-            //Start streaming/playing song
-            var songReq = 'stream?key=' + currentKey;
-            loadSong(songReq, function(){
-                source.start(0);
-                playStatus = 'playing';
-                $("#playPause").toggleClass('glyphicon-pause glyphicon-pause');
-            });
-
-            //Update Now Playing Content
-            socket.emit('getTrackInfo', {
-                key: currentKey
-            });
-
-            //reset
-            $(currentSelection).children().css('background-color', '#222222');
-            songSelection = "None";
-        }
+        loadNextTrack();
     });
 
 /********************************************************************************************************************/
@@ -122,17 +99,17 @@
 
             //PROGRESS BAR UPDATE
                 var percent = _currentAudioPosition / source.buffer.duration;
-               $('.progress-bar').css("width", Math.round(percent*100) + "%" ).attr( "aria-valuenow", Math.round(percent*100) );
+               $('.this-progress-bar').css("width", Math.round(percent*100) + "%" ).attr( "aria-valuenow", Math.round(percent*100) );
 
                 var time;
                 var minutes = parseInt(Math.floor(_currentAudioPosition) / 60 ) % 60;
                 var seconds = Math.floor(_currentAudioPosition) % 60;
-                if(seconds.length < 2){
-                    time = minutes + ":0" + seconds.toString();
+                if(seconds < 10){
+                    time = minutes.toString() + ':0' + seconds.toString();
                 } else {
-                    time = minutes + ":" + seconds.toString();
+                    time = minutes.toString() + ':' + seconds.toString();
                 }
-                $('.progress-bar').html(time);
+                $('.this-progress-bar').html(time);
                 console.log("Time: " + time);
                 console.log(percent);
                 console.log("Current Time - " + (_currentAudioPosition) + " -  : Length - " + source.buffer.duration);
@@ -157,6 +134,9 @@
 
     var loadNextTrack = function(){
         if((nextKey !== "") && (nextKey !== undefined)){
+            //Stop timer
+            _stopTimer();
+
             //Reset Highlighting
             $(currentSelection).children().css('background-color', '#222222');
             songSelection = "None";
@@ -183,6 +163,10 @@
                     key: currentKey
                 });
             }
+
+            //reset
+            $(currentSelection).children().css('background-color', '#222222');
+            songSelection = "None";
         }
     };
 
