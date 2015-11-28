@@ -44,13 +44,23 @@ io.on('connection', function (socket) {
     clientManager.addClient(client);
     console.log("New connection via: " + client.IP_ADDRESS + ". SocketID: " + client.id);
 
+    //Let everyone know that someone connected
+    socket.broadcast.emit('a listener just connected', {
+       user: socket.id
+    });
+
+    //When a client disconnects
     socket.on('disconnect', function () {
+        //Let everyone know that the user left
+        socket.broadcast.emit('a listener just left', {
+           user: socket.id
+        });
         console.log("socket disconnected");
         socket.disconnect();
         clientManager.removeClient(client);
     });
 
-    //To tell who is playing what and at what time
+    //Get the information for a particular track (album artwork included)
     socket.on('getTrackInfo', function(data) {
         //Get TrackData
         console.log("The key is is :" + data.key);
@@ -68,6 +78,35 @@ io.on('connection', function (socket) {
                 });
             });
         });
+    });
+
+    //**When a user starts listening to a song
+    socket.on('i am listening to', function(data){
+        var song = data.song;
+        var artist = data.artist;
+        var album = data.album;
+        var key = data.key;
+        var percent = data.percent;
+        var time = data.time;
+
+        socket.broadcast.emit('someone is listening to', {
+            user: socket.id,
+            song: song,
+            artist: artist,
+            album: album,
+            key: key,
+            percent: percent,
+            time: time
+        });
+    });
+
+    //When a user pauses or plays a song
+    socket.on('song state change', function(data){
+       var state = data.state;
+       socket.broadcast.emit('song state change', {
+           user: socket.id,
+           state: state
+       });
     });
 });
 

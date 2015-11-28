@@ -176,3 +176,10 @@ var stopPictureAnimationInterval = function(){
     }
 };
 
+/*************************************************************************************************************/
+/*********************************************** TEST FUNCTIONS **********************************************/
+/************** (All functions are to start here before they are moved into their appropriate section) *******/
+
+function broadcastSongDisplay(user, song, artist, album, key, progress, time){
+
+}

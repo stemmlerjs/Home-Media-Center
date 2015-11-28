@@ -21,13 +21,29 @@
 
     var nextKey = "";
     var prevKey = "";
+    var currentKey = "";
     var currentSelection;
 
-    var _currentAudioPosition = 0;
-    var _interval;
+    var _currentAudioPosition = 0;  //this is what is incremented every second of the interval up until it = source.buffer.duration
+    var _interval; //this interval executes every 1 second, to update the track current audio position. Pauses when necessary.
+    var percent;
+    var time;
+
+    var listeners = [];
 
 /********************************************************************************************************************/
 /*********************************************** SOCKET EVENT HANDLING **********************************************/
+
+    socket.on('a listener just connected', function(data){
+        listeners.push(data.user);
+    });
+
+    socket.on('a listener just left', function(data){
+        var index = listeners.indexOf(data.user); //note: not supported in IE 7/8
+        if(index > -1){
+            listeners.splice(index,1); //second parameter is number of elements to remove
+        }
+    });
 
     socket.on('message', function(inMessage){
        alert(inMessage.user + " send a message saying " + inMessage.text);
@@ -41,10 +57,7 @@
         currentSong = trackInfo.song;
         currentArtist = trackInfo.artist;
         currentAlbum = trackInfo.album;
-
-        //currentSong = currentSelection.getElementsByClassName('name-time')[0].textContent;
-        //currentArtist = currentSelection.getElementsByClassName('track-artist')[0].textContent;
-        //currentAlbum = currentSelection.getElementsByClassName('track-album')[0].textContent;
+        currentKey = trackInfo.key;
         console.log();
 
         nowPlaying.innerHTML = '"' + currentSong + " by " + currentArtist + '"';
@@ -54,20 +67,52 @@
         nextSongKey = nextPrevInfo.nextKey;
         prevSongKey = nextPrevInfo.prevKey;
     });
+
+    socket.on('someone is listening to', function(data){
+        var user = data.user;
+        var song = data.song;
+        var artist = data.artist;
+        var album = data.album;
+        var key = data.key;
+        var progress = data.percent;
+        var time = data.time;
+
+
+        console.log(user + " is listening to " + song + " by " + artist + " and is at second: " + time + " which is " + progress + "% complete.");
+        broadcastSongDisplay(user, song, artist, album, key, progress, time);
+    });
+
+    socket.on('song state change', function(data){
+        var user = data.user;
+        var state = data.state;
+
+        //Check for anything that is on the screen by the user
+
+            //Update the Playing/Pausing showing for this listener
+    });
+
 /********************************************************************************************************************/
 /*********************************************** AUDIO CONTROLS  **********************************************/
 
     var playStatus = 'stopped';
-    $(".track-play-pause").click(function() {
+    $(".track-play-pause").click(function() { //PAUSE
         if (playStatus === 'playing') {
             audioCtx.suspend().then(function () {
                 playStatus = 'stopped';
                 $("#playPause").toggleClass('glyphicon-pause glyphicon-play');
+
+                socket.emit('song state change', {
+                    state: paused
+                });
             });
-        } else if (playStatus === 'stopped') {
+        } else if (playStatus === 'stopped') { //PLAY
             audioCtx.resume().then(function () {
                 playStatus = 'playing';
                 $("#playPause").toggleClass('glyphicon-play glyphicon-pause');
+
+                socket.emit('song state change', {
+                    state: playing
+                })
             });
         }
     });
@@ -98,10 +143,11 @@
             _currentAudioPosition += 1;
 
             //PROGRESS BAR UPDATE
-                var percent = _currentAudioPosition / source.buffer.duration;
+                //keeps an updated value of the percentage of the song completion (to be updated locally and sent via broadcast)
+               percent = _currentAudioPosition / source.buffer.duration;
                $('.this-progress-bar').css("width", Math.round(percent*100) + "%" ).attr( "aria-valuenow", Math.round(percent*100) );
 
-                var time;
+
                 var minutes = parseInt(Math.floor(_currentAudioPosition) / 60 ) % 60;
                 var seconds = Math.floor(_currentAudioPosition) % 60;
                 if(seconds < 10){
@@ -115,6 +161,17 @@
                 console.log("Current Time - " + (_currentAudioPosition) + " -  : Length - " + source.buffer.duration);
             //END OF PROGRESS BAR UPDATE
 
+            //BROADCAST SONG INFORMATION
+            //Send a message to the server to broadcast to everyone else in the room what song you are listening to,
+            //and the position of the song as well. Provides the key for the song so that others can fetch the album artwork.
+            socket.emit('i am listening to', {
+                song: currentSong,
+                album: currentAlbum,
+                artist: currentArtist,
+                key: currentKey,
+                percent: Math.round(percent*100),
+                time: time
+            });
         }
 
         if((_currentAudioPosition) >= source.buffer.duration){
