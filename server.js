@@ -44,9 +44,10 @@ io.on('connection', function (socket) {
     clientManager.addClient(client);
     console.log("New connection via: " + client.IP_ADDRESS + ". SocketID: " + client.id);
 
+    socket
+
     socket.on('disconnect', function () {
         console.log("socket disconnected");
-        socket.disconnect();
         clientManager.removeClient(client);
     });
 

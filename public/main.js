@@ -42,9 +42,6 @@
         currentArtist = trackInfo.artist;
         currentAlbum = trackInfo.album;
 
-        //currentSong = currentSelection.getElementsByClassName('name-time')[0].textContent;
-        //currentArtist = currentSelection.getElementsByClassName('track-artist')[0].textContent;
-        //currentAlbum = currentSelection.getElementsByClassName('track-album')[0].textContent;
         console.log();
 
         nowPlaying.innerHTML = '"' + currentSong + " by " + currentArtist + '"';
@@ -91,7 +88,7 @@
     var startTrackingAudioPosition = function() {
             _currentAudioPosition = 0;
             _interval = setInterval(_timer, 1000);
-        };
+    };
 
     var _timer = function(){
         if(audioCtx.state === 'running'){
