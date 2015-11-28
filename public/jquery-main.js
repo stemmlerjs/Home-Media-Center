@@ -181,5 +181,7 @@ var stopPictureAnimationInterval = function(){
 /************** (All functions are to start here before they are moved into their appropriate section) *******/
 
 function broadcastSongDisplay(user, song, artist, album, key, progress, time){
-
+    console.log($('.progress-bar-users'));
+    $('.progress-bar-users').css("width", progress + "%" ).attr( "aria-valuenow", time + "");
+    $('.progress-bar').html(time);
 }
