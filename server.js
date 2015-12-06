@@ -13,12 +13,12 @@ var io = require('socket.io')(server);
 var flow = require('nimble');
 var filesystem = require('fs');
 var id3 = require('id3js');
-var config = require('./config.js');
+var config = require('./app_modules/config/config.js');
 var async = require('async');
 var media = require('mediaserver');
 var ss = require('socket.io-stream');
-var Client = require('./client.js');
-var ClientManager = require('./clientmanager.js');
+var Client = require('./app_modules/client/client.js');
+var ClientManager = require('./app_modules/client/clientmanager.js');
 
 //Initialize database
 var database = require('./app_modules/database/database.js');
@@ -31,10 +31,13 @@ server.listen(config.configReader.network.port, function () {
     console.log('Server listening at port ', config.configReader.network.port);
 });
 
-//Make public directory routable
+//Make ENTIRE public directory routable
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/node_modules/socket.io/lib'));
 app.use(express.favicon(__dirname  + "/public/src/favicon.ico"));
+
+//Listening Users
+var listeners = {};
 
 /********************************************************************************************************************/
 /*********************************************** SOCKET EVENT HANDLING **********************************************/
@@ -43,6 +46,12 @@ io.on('connection', function (socket) {
     var client = new Client(socket);
     clientManager.addClient(client);
     console.log("New connection via: " + client.IP_ADDRESS + ". SocketID: " + client.id);
+
+    //Add to listeners list
+    socket.emit('current listeners', {
+        listeners: JSON.stringify(listeners)
+    });
+    listeners[socket.id] = socket.id;
 
     //Let everyone know that someone connected
     socket.broadcast.emit('a listener just connected', {
@@ -55,9 +64,10 @@ io.on('connection', function (socket) {
         socket.broadcast.emit('a listener just left', {
            user: socket.id
         });
+
+        delete listeners[socket.id];
         console.log("socket disconnected");
         socket.disconnect();
-        clientManager.removeClient(client);
     });
 
     //Get the information for a particular track (album artwork included)
@@ -89,6 +99,7 @@ io.on('connection', function (socket) {
         var percent = data.percent;
         var time = data.time;
 
+
         socket.broadcast.emit('someone is listening to', {
             user: socket.id,
             song: song,
@@ -108,6 +119,17 @@ io.on('connection', function (socket) {
            state: state
        });
     });
+
+    //Prevent client from timing out, send heartbeats
+    function sendHeartbeat(){
+        setTimeout(sendHeartbeat, 8000);
+        io.sockets.emit('ping', { beat : 1 });
+    }
+
+    socket.on('pong', function(data){
+    });
+
+    setTimeout(sendHeartbeat, 8000);
 });
 
 /********************************************************************************************************************/
@@ -136,9 +158,10 @@ app.get('/library', function(req, res){
     ]);
 });
 
+
 //BUILD MAIN PAGE
 app.get('/index', function(req, res){
-    filesystem.createReadStream('./public/src/index.txt').pipe(res);
+    filesystem.createReadStream('./public/src/tempindex.txt').pipe(res);
 });
 
 //LOAD THE PLAYER
@@ -252,7 +275,7 @@ function addMultipleSongs(dirOfSongs) {
  * @see: addMultipleSongs (function)
  */
 
-function _getAllFilesFromFolder(dir, fn) {
+function _getAllFilesFromFolder(dir, callback) {
     var results = [];
 
     //Read each file in the current directory
@@ -267,13 +290,12 @@ function _getAllFilesFromFolder(dir, fn) {
             results.push(file);
         }
     });
-    fn(results);
+    callback(results);
 }
 
-
-/*************************************************************************************************************/
-/*********************************************** TEST FUNCTIONS **********************************************/
-/************** (All functions are to start here before they are moved into their appropriate section) *******/
+/*The purpose of this method is to change all potential dangerous text symbols that could mess up SQL
+ queries.
+ */
 
 function _safeProofText(text){
     text = text + "";
@@ -286,6 +308,10 @@ function _safeProofText(text){
     return text;
 }
 
+/*This method reverts the changed text used on SQL data, etc.
+ USE THIS METHOD ON ALL DATA COMING BACK FROM DB.
+ */
+
 function _safeProofTextUndo(text){
     text = text + "";
     text = text.replace("**dbl**", '"');
@@ -294,4 +320,12 @@ function _safeProofTextUndo(text){
     text = text.replace("**cl**",")");
     return text;
 }
+
+
+/*************************************************************************************************************/
+/*********************************************** TEST FUNCTIONS **********************************************/
+/************** (All functions are to start here before they are moved into their appropriate section) *******/
+
+
+
 

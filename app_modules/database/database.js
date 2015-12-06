@@ -7,7 +7,7 @@ var sqlite3 = require('sqlite3').verbose();
 var fs = require('fs');
 var file = './app_modules/database/mydb.db';
 var flow = require('nimble');
-var config = require(__dirname + '../../../config.js');
+var config = require(__dirname + '../../config/config.js');
 var async = require('async');
 
 //Initialize Database

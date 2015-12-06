@@ -26,8 +26,18 @@ $(document).ready(function () {
             $(".navbar-collapse").collapse('hide');
         }
     });
+
 });
 
+var listeningUsers = [];
+
+function displayAllListeningUsers(){
+    if(listeningUsers.length !== 0){
+        listeningUsers.forEach(function(user) {
+
+        });
+    }
+}
 
 /********************************************************************************************************************/
 /*********************************************** MUSIC PLAYER ANIMATION ******************************************/
@@ -112,7 +122,20 @@ var _animatePic = function(){
                 url : "index",
                 dataType: "text",
                 success : function (data) {
-                    $('#bodyContent').append(data);
+                    var homeHtml = "<div class='container'>";
+                    homeHtml += "<h1 style='font-family: 'Oswald', sans-serif;'>Welcome Home!</h1>";
+                    homeHtml += "<p class='lead'><span class='glyphicon glyphicon-headphones' aria-hidden='true'></span> See what's being played around the house</p>";
+                    homeHtml+= "</div>";
+                    homeHtml+= "<div id='user-listening-list'>";
+                    homeHtml+= " <div class='container' style='background-color: black; height:30px; overflow:hidden'>";
+                    homeHtml+=" <h4 style='color: white;margin-top: 7px;'>Now Playing - <span style='color:grey'><small>Living Room [Station A], Khalil's Room [Station B], Study [Station D]</small></span></h4>";
+                    homeHtml+= "</div>";
+                    homeHtml+= "</div>";
+                    homeHtml+= "</div>";
+
+                    $('#bodyContent').append(homeHtml);
+                    $('#user-listening-list').append(data);
+                    displayAllListeningUsers();
                 }
             });
             resetLoader(0);
@@ -180,8 +203,7 @@ var stopPictureAnimationInterval = function(){
 /*********************************************** TEST FUNCTIONS **********************************************/
 /************** (All functions are to start here before they are moved into their appropriate section) *******/
 
-function broadcastSongDisplay(user, song, artist, album, key, progress, time){
-    console.log($('.progress-bar-users'));
+function broadcastSongDisplay(user, song, artist, album, key, progress, time, id){
     $('.progress-bar-users').css("width", progress + "%" ).attr( "aria-valuenow", time + "");
-    $('.progress-bar').html(time);
+    $('.progress-bar-users').html(time);
 }

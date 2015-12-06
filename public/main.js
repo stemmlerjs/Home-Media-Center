@@ -34,19 +34,31 @@
 /********************************************************************************************************************/
 /*********************************************** SOCKET EVENT HANDLING **********************************************/
 
+
     socket.on('a listener just connected', function(data){
         listeners.push(data.user);
+        //listeners.forEach(function(listener){
+        //    console.log(listener);
+        //});
+    });
+
+    socket.on('current listeners', function(data){
+        listeners = JSON.parse(data.listeners);
+        //listeners.forEach(function(listener){
+        //    console.log(listener);
+        //});
     });
 
     socket.on('a listener just left', function(data){
+        //Flag user for deletion in array
         var index = listeners.indexOf(data.user); //note: not supported in IE 7/8
         if(index > -1){
             listeners.splice(index,1); //second parameter is number of elements to remove
         }
-    });
 
-    socket.on('message', function(inMessage){
-       alert(inMessage.user + " send a message saying " + inMessage.text);
+        //listeners.forEach(function(listener){
+        //    console.log(listener);
+        //});
     });
 
     socket.on('trackInfo', function(trackInfo){
@@ -77,9 +89,8 @@
         var progress = data.percent;
         var time = data.time;
 
-
         console.log(user + " is listening to " + song + " by " + artist + " and is at second: " + time + " which is " + progress + "% complete.");
-        broadcastSongDisplay(user, song, artist, album, key, progress, time);
+        broadcastSongDisplay(user, song, artist, album, key, progress, time, user);
     });
 
     socket.on('song state change', function(data){
@@ -89,6 +100,10 @@
         //Check for anything that is on the screen by the user
 
             //Update the Playing/Pausing showing for this listener
+    });
+
+    socket.on('ping', function(data){
+        socket.emit('pong', {});
     });
 
 /********************************************************************************************************************/
@@ -208,7 +223,7 @@
                 var currentKey = $(currentSelection).attr('data-track-key');
 
                 //Start streaming/playing song
-                var songReq = 'stream?key=' + currentKey ;
+                var songReq = 'stream?key=' + currentKey;
                 loadSong(songReq, function(){
                     source.start(0);
                     playStatus = 'playing';
@@ -237,7 +252,6 @@
             currentSelection = rowElement;
 
             _stopTimer();
-            console.log("Play this song " + key);
 
             //Start streaming/playing song
             var songReq = 'stream?key=' + key;

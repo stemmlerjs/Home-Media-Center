@@ -223,6 +223,10 @@ th {
 
 .track-row {
     text-align: left;
+    height: 15px;
+    line-height: 2;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+
 }
 
 .track-length {
@@ -382,4 +386,10 @@ td {
     font-style:italic;  
     padding-left:3px;
     padding-right: 2px;
+
+}
+
+#listener-listening-row{
+    margin-top:10px;
+
 }

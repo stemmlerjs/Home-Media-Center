@@ -16,9 +16,9 @@ var configWriter = require('nconf');
 configAccess.configWriter = configWriter;
 
 //Initialize READER and WRITER
-var configFile = fs.readFileSync('./config.json');
+var configFile = fs.readFileSync('./app_modules/config/config.json');
 configAccess.configReader = JSON.parse(configFile);
-configWriter.use('file', { file: './config.json' });
+configWriter.use('file', { file: './app_modules/config/config.json' });
 configWriter.load();
 
 //Config Methods
