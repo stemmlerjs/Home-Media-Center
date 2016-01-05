@@ -1,0 +1,251 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+
+<head>
+    <title>Carcinogen - Home Media Center</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+    <link rel="icon" type="image/png" href="src/favicon.ico" sizes="16x16" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <!-- load fontawesome -->
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+
+    <style>
+        body {
+            background: -webkit-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* Chrome 10+, Saf5.1+ */
+            background: -moz-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* FF3.6+ */
+            background: -ms-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* IE10 */
+            background: -o-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* Opera 11.10+ */
+            background: linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* W3C */
+            height: 100%;
+            color: black;
+        }
+        
+        a,
+        a:hover {
+            text-decoration: none;
+            color: white;
+        }
+        
+        p {
+            color: white;
+        }
+        
+        #getstarted {}
+        
+        .navbar-brand,
+        .navbar-brand:visited,
+        .navbar-brand:link,
+        .bnavbar-brand:hover,
+        .navbar-brand:focus,
+        .navbar-brand:active
+        {
+            font-weight: bold;
+            color: white;
+            height: 35px;
+            margin-top: 8px;
+            margin-left:10px;
+            border: white solid;
+            text-decoration: none;
+        }
+        
+        #sitename {
+            position: relative;
+            font-size: 25px;
+            top: -12px;
+            text-decoration: none;
+        }
+        
+        nav {
+            height: 45px;
+            background-color: #222;
+        }
+        
+        ul,
+        li {
+            height: 45px;
+            position: relative;
+            top: -5px;
+        }
+        
+        .btn {
+            height: 30px;
+            margin-right: 6px;
+            background-color: #50C9C3;
+        }
+        .navbar-nav > li > a {
+            padding-top:10px !important; padding-bottom:10px !important;
+        }
+        .navbar {
+            min-height:52px !important;
+            border-bottom: none;
+        }
+        
+        #sidebar{
+            position:absolute;
+            left:0; 
+            top:52px; 
+            bottom: 0;
+            width: 193px;
+            background-color: #222222;
+            border-right: solid #080808 1px;
+            z-index: 1;
+        }
+        
+        #sidebar-top-content {
+            background-color: #333333;
+            position:absolute;
+            left:7px; 
+            top:0px; 
+            bottom: 100px;
+            width: 179px;
+            z-index: 99;
+            color: white;
+            padding-top:15px;
+        }
+        
+        #content{
+            position:absolute;
+            right:0; 
+            top:52px; 
+            bottom: 0;
+            border-left: solid #080808 1px;     
+        }
+        
+        #nav-items{
+            
+        }
+        
+        /* Hide sidebar on smaller devices */
+    @media (max-width: 767px) {
+        #sidebar {
+            width: 0px;
+        }
+    }
+        
+        #profile{
+            text-align: center;   
+            margin-bottom: 14px;
+        }
+        
+        #profile img {
+            width: 70px;   
+            border-radius: 40px;
+            border: solid white 2px;
+            padding: 2px;
+        }
+        
+        #profile a {
+            border-bottom: solid white 1px;   
+            padding-bottom: 9px;
+        }
+        
+        #sidebar-menu li {
+            height: 20px;  
+            text-shadow: 2px 4px 3px rgba(0,0,0,0.3);   
+        }
+        
+        .blue-special{
+            color: #1884BA;
+        }
+        
+        .purple-special {
+            color: #9479fa;   
+        }
+    </style>
+</head>
+
+<body>
+    <!--  NEW NAVBAR  -->
+    <nav>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-brand">
+                <a class="collapse-buttons" href="#"><span id="sitename">Carcinogen</span></a>
+            </div>
+            
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+            
+            <div id="nav-items" class="collapse navbar-collapse container">
+                <ul>
+                        
+<!--
+                    <li>Item</li>
+                    <li>Item</li>
+                    <li>Item</li>
+-->
+                </ul>
+            </div>
+        </div>
+    </nav>    
+    <div id="sidebar">
+        <div id="sidebar-top-content" class="container">
+            <!-- ========== PROFILE ROW ========= -->
+            <div class="row">
+                <div id="profile" class="col-md-12">
+                    <img id="profilePic" src="https://media.licdn.com/mpr/mpr/shrinknp_200_200/AAEAAQAAAAAAAAZnAAAAJDY3NzBiYjM5LTRkMjYtNGQ5OC1hNTM2LTAzZmUzYTAyZDI2ZA.jpg">
+                    <a id="profileName">OldAndInYourWay</a>
+                </div>
+            </div>
+            <!-- ========== MENU ITEMS ROW ========= -->
+            <div class="row">
+                <div id="sidebar-menu" class="col-md-12">
+                    <ul>
+                        <li>Profile</li>
+                        <li>Library [<span class="purple-special">3537</span>]</li>
+                        <li>Friends</li>
+                        <li>Stations</li>
+                        <li></li>
+                        <li>Settings</li>
+                        <li>Logout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div id="content">
+    
+    </div>
+    <script>
+//        $(document).ready(function(){
+//            //======== Main Content Area Resizing =====
+//            var resizeContentArea = function () {
+//                    var winWidth = $(window).width();
+//                    var $sidebar = $('#sidebar');
+//                    var $content = $('#content');
+//                    $content.css("width", (winWidth - $sidebar.width()) + "px");
+//                };
+//
+//                resizeContentArea();
+//
+//                //Continuous Resize
+//                $(window).resize(function () {
+//                    resizeContentArea();
+//                });
+//        });
+    </script>
+</body>
+</html>

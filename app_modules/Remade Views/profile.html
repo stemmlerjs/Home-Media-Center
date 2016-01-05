@@ -1,0 +1,105 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+
+<head>
+    <title>Carcinogen - Home Media Center</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Oswald:400,700' rel='stylesheet' type='text/css'>
+    <link rel="icon" type="image/png" href="src/favicon.ico" sizes="16x16" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <!-- load fontawesome -->
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+
+    <style>
+        body {
+            background: -webkit-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* Chrome 10+, Saf5.1+ */
+            background: -moz-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* FF3.6+ */
+            background: -ms-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* IE10 */
+            background: -o-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* Opera 11.10+ */
+            background: linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* W3C */
+            height: 100%;
+            color: black;
+        }
+        
+        a,
+        a:hover {
+            text-decoration: none;
+        }
+        
+        p {
+            color: white;
+        }
+        
+        #getstarted {}
+        
+        .brand-logo,
+        .brand-logo:visited,
+        .brand-logo:link,
+        .brand-logo:hover,
+        .brand-logo:focus,
+        .brand-logo:active
+        {
+            font-weight: bold;
+            color: white;
+            height: 35px;
+            margin-top: 5px;
+            margin-left: 7px;
+            border: white solid;
+            text-decoration: none;
+        }
+        
+        #sitename {
+            position: relative;
+            font-size: 20px;
+            top: -22px;
+            padding-left: 5px;
+            padding-right: 5px;
+            text-decoration: none;
+        }
+        
+        nav {
+            height: 45px;
+            background-color: #222;
+        }
+        
+        ul,
+        li {
+            height: 45px;
+            position: relative;
+            top: -5px;
+        }
+        
+        .btn {
+            height: 30px;
+            margin-right: 6px;
+            background-color: #50C9C3;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo"><span id="sitename">Carcinogen</span></a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+            </ul>
+        </div>
+    </nav>
+    
+</body>
+</html>

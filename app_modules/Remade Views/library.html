@@ -1,0 +1,506 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html>
+
+<head>
+    <title>Carcinogen - Home Media Center</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+    <link rel="icon" type="image/png" href="src/favicon.ico" sizes="16x16" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <!-- load fontawesome -->
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
+    <link rel="stylesheet" href="/src/css/jquery.resizableColumns.css">
+    <style>
+        body {
+            background: -webkit-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* Chrome 10+, Saf5.1+ */
+            background: -moz-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* FF3.6+ */
+            background: -ms-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* IE10 */
+            background: -o-linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* Opera 11.10+ */
+            background: linear-gradient(90deg, #50C9C3 10%, #96DEDA 90%);
+            /* W3C */
+            height: 100%;
+            color: black;
+        }
+        
+        a,
+        a:hover {
+            text-decoration: none;
+            color: white;
+        }
+        
+        p {
+            color: white;
+        }
+        
+        #getstarted {}
+        
+        .navbar-brand,
+        .navbar-brand:visited,
+        .navbar-brand:link,
+        .bnavbar-brand:hover,
+        .navbar-brand:focus,
+        .navbar-brand:active {
+            font-weight: bold;
+            color: white;
+            height: 35px;
+            margin-top: 8px;
+            margin-left: 10px;
+            border: white solid;
+            text-decoration: none;
+        }
+        
+        #sitename {
+            position: relative;
+            font-size: 25px;
+            top: -12px;
+            text-decoration: none;
+        }
+        
+        nav {
+            height: 45px;
+            background-color: #222;
+        }
+        
+        ul,
+        li {
+            height: 45px;
+            position: relative;
+            top: -5px;
+        }
+        
+        .btn {
+            height: 30px;
+            margin-right: 6px;
+            background-color: #50C9C3;
+        }
+        
+        .navbar-nav > li > a {
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+        }
+        
+        .navbar {
+            min-height: 52px !important;
+            border-bottom: none;
+        }
+        
+        #sidebar {
+            position: absolute;
+            left: 0;
+            top: 52px;
+            bottom: 0;
+            width: 193px;
+            background-color: #222222;
+            border-right: solid #080808 1px;
+            z-index: 1;
+        }
+        
+        #sidebar-top-content {
+            background-color: #333333;
+            position: absolute;
+            left: 7px;
+            top: 0px;
+            bottom: 100px;
+            width: 179px;
+            z-index: 99;
+            color: white;
+            padding-top: 15px;
+        }
+        
+        #content {
+            height: 100px;
+            /*            background-color: #9479fa; */
+            float: right;
+            margin-top: 18px;
+            padding-left: 13px;
+            padding-right: 13px;
+            overflow-y: auto;
+        }
+        
+        #nav-items {}
+        /*
+         Hide sidebar on smaller devices 
+    @media (max-width: 767px) {
+        #sidebar {
+            width: 0px;
+        }
+    }
+*/
+        
+        #profile {
+            text-align: center;
+            margin-bottom: 14px;
+        }
+        
+        #profile img {
+            width: 70px;
+            border-radius: 40px;
+            border: solid white 2px;
+            padding: 2px;
+        }
+        
+        #profile a {
+            border-bottom: solid white 1px;
+            padding-bottom: 9px;
+        }
+        
+        #sidebar-menu li {
+            height: 20px;
+            text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        #sidebar-menu li ul li {
+            height: 20px;
+            text-shadow: 2px 4px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .blue-special {
+            color: #1884BA;
+        }
+        
+        .purple-special {
+            color: #9479fa;
+        }
+        
+        .track-row {
+            color: white;
+            background-color: #222;
+        }
+        
+       .track-artist {
+          border: solid #222 2px;   
+        }
+        
+        thead tr {
+            background-color: #333333;
+            color:#9479fa;
+        }
+        
+        .time {
+            font-size: 13px;
+            color: #9479fa;
+        }
+        
+        .sublist {
+            margin-left:15px; 
+            padding-left: 15px; 
+            padding-top:6px; 
+            margin-top:8px; 
+            border-left: 2px solid white;  
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ================================ -->
+    <!-- ============ NAVBAR ============ -->
+    <!-- ================================ -->
+    <nav>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-brand">
+                <a class="collapse-buttons" href="#"><span id="sitename">Carcinogen</span></a>
+            </div>
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+
+            <div id="nav-items" class="collapse navbar-collapse container">
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================================ -->
+    <!-- ============ SIDEBAR =========== -->
+    <!-- ================================ -->
+    <div id="sidebar">
+        <div id="sidebar-top-content" class="container">
+            <!-- ========== PROFILE ROW ========= -->
+            <div class="row">
+                <div id="profile" class="col-md-12">
+                    <img id="profilePic" src="https://media.licdn.com/mpr/mpr/shrinknp_200_200/AAEAAQAAAAAAAAZnAAAAJDY3NzBiYjM5LTRkMjYtNGQ5OC1hNTM2LTAzZmUzYTAyZDI2ZA.jpg">
+                    <a id="profileName">OldAndInYourWay</a>
+                </div>
+            </div>
+            <!-- ========== MENU ITEMS ROW ========= -->
+            <div class="row">
+                <div id="sidebar-menu" class="col-md-12">
+                    <ul>
+                        <li class="sidebar-menu-item" data-length="2"><span>Profile</span> 
+                            <ul class="blue-special sublist">
+                                <li>Edit Profile</li>
+                                <li>Other</li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item" data-length="2">Library [<span class="purple-special">3537</span>]
+                            <ul class="blue-special sublist">
+                                <li>Add Music</li>
+                                <li>Playlists</li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-menu-item" data-length="0">Friends</li>
+                        <li class="sidebar-menu-item" data-length="0">Stations</li>
+                        <li></li>
+                        <li class="sidebar-menu-item" data-length="0">Settings</li>
+                        <li class="sidebar-menu-item" data-length="0">Logout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- ================================ -->
+    <!-- ============ CONTENT =========== -->
+    <!-- ================================ -->
+    <div id="content">
+        <table class="table table-bordered" data-resizable-columns-id="demo-table-v2">
+            <thead>
+                <tr>
+                    <th data-resizable-column-id="song">Song</th>
+                    <th data-resizable-column-id="artist">Artist</th>
+                    <th data-resizable-column-id="album">Album</th>
+                    <th data-resizable-column-id="year">Year</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="track-row" onclick="songSelect(this,1);" data-track-key="1">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Albatross
+                            <span class="time">[3:26]</span>
+                        </div>
+                    </td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,2);" data-track-key="2">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Memories
+                            <span class="time">[3:46]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,3);" data-track-key="3">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Swan Lake 
+                            <span class="time">[7:31]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,4);" data-track-key="4">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Poptones <span class="time">[4:32]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,5);" data-track-key="5">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Careering 
+                            <span class="time">[2:19]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,6);" data-track-key="6">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            No Birds 
+                            <span class="time">[3:11]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,7);" data-track-key="7">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Graveyard <span class="time">[5:39]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,1);" data-track-key="1">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Albatross
+                            <span class="time">[3:26]</span>
+                        </div>
+                    </td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,2);" data-track-key="2">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Memories
+                            <span class="time">[3:46]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,3);" data-track-key="3">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Swan Lake 
+                            <span class="time">[7:31]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,4);" data-track-key="4">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Poptones <span class="time">[4:32]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,5);" data-track-key="5">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Careering 
+                            <span class="time">[2:19]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,6);" data-track-key="6">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            No Birds 
+                            <span class="time">[3:11]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,7);" data-track-key="7">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Graveyard <span class="time">[5:39]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,1);" data-track-key="1">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Albatross
+                            <span class="time">[3:26]</span>
+                        </div>
+                    </td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,2);" data-track-key="2">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Memories
+                            <span class="time">[3:46]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,3);" data-track-key="3">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Swan Lake 
+                            <span class="time">[7:31]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,4);" data-track-key="4">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Poptones <span class="time">[4:32]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,5);" data-track-key="5">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Careering 
+                            <span class="time">[2:19]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,6);" data-track-key="6">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            No Birds 
+                            <span class="time">[3:11]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+                <tr class="track-row" onclick="songSelect(this,7);" data-track-key="7">
+                    <td class="name-time">
+                        <div class="play-track" style="cursor: pointer;">
+                            Graveyard <span class="time">[5:39]</span>
+                        </div></td>
+                    <td class="track-artist">Public Image Ltd</td>
+                    <td class="track-album">Metal Box</td>
+                    <td class="track-year">1979</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/store.js/1.3.14/store.min.js"></script>
+    <script src="src/script/jquery.resizableColumns.min.js"></script>
+    <script src="toolsandhelpers.js"></script>
+</body>
+
+</html>

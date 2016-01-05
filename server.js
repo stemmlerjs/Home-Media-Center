@@ -22,6 +22,7 @@ var ClientManager = require('./app_modules/client/clientmanager.js');
 
 //Initialize database
 var database = require('./app_modules/database/database.js');
+//var MusicLibrary = require('.app_modules/models/library.js');
 
 //Client Manager
 var clientManager = new ClientManager();
@@ -36,8 +37,6 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/node_modules/socket.io/lib'));
 app.use(express.favicon(__dirname  + "/public/src/favicon.ico"));
 
-//Listening Users
-var listeners = {};
 
 /********************************************************************************************************************/
 /*********************************************** SOCKET EVENT HANDLING **********************************************/
@@ -49,9 +48,9 @@ io.on('connection', function (socket) {
 
     //Add to listeners list
     socket.emit('current listeners', {
-        listeners: JSON.stringify(listeners)
+     //   listeners: JSON.stringify(listeners)
     });
-    listeners[socket.id] = socket.id;
+    //listeners[socket.id] = socket.id;
 
     //Let everyone know that someone connected
     socket.broadcast.emit('a listener just connected', {
@@ -65,7 +64,7 @@ io.on('connection', function (socket) {
            user: socket.id
         });
 
-        delete listeners[socket.id];
+       // delete listeners[socket.id];
         console.log("socket disconnected");
         socket.disconnect();
     });
@@ -326,6 +325,24 @@ function _safeProofTextUndo(text){
 /*********************************************** TEST FUNCTIONS **********************************************/
 /************** (All functions are to start here before they are moved into their appropriate section) *******/
 
+var ListenerRoom = require('./app_modules/listening/listenerroom.js');
+var Listener = require('./app_modules/listening/listener.js');
 
+var sock1 = {
+    id: 'khalil'
+};
+var listener1 = new Listener(sock1);
+
+
+var sock2 = {
+    id: 'asia'
+};
+var listener2 = new Listener(sock2);
+
+
+var room = new ListenerRoom();
+room.addOrUpdateListener(listener1);
+room.addOrUpdateListener(listener2);
+console.log(room.getAllListeners());
 
 
